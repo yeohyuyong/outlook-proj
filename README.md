@@ -7,7 +7,7 @@ Six variables I'm tracking: Core CPI, Fed Funds, 10y Treasury, DXY, US GDP, Bren
 1. Paste `prompts/tracker_prompt.md` into the research assistant.
 2. Save the response as `reports/YYYY-MM-DD.md`. Date has to match the H1 inside the file, otherwise the parser barfs.
 3. `python -m src.cli ingest-all` — rebuilds both CSVs in `data/` from scratch by walking `reports/`.
-4. Open `notebooks/dashboard.ipynb`, run all cells. If Jupyter isn't available on the laptop, run `python -m src.cli build-html` instead and open `data/dashboard.html` in a browser — same charts, self-contained (works offline, no server).
+4. `python -m src.cli build-html` — renders `data/dashboard.html`. Self-contained (works offline, no server); open in a browser.
 
 ## Setup
 
@@ -23,8 +23,7 @@ python -m src.cli ingest-all
 - `reports/*.md`: one markdown per cycle.
 - `data/entries.csv`: parsed rows, one per source forecast.
 - `data/runs.csv`: audit log.
-- `src/`: parsing, CSV writing, charts.
-- `notebooks/dashboard.ipynb`: the two charts.
+- `src/`: parsing, CSV writing, charts, HTML renderer.
 - `tests/`: fixtures and unit tests.
 
 ## Changing the tracked variables

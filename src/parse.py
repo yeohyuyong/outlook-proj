@@ -5,9 +5,10 @@ import hashlib
 import logging
 import re
 from dataclasses import dataclass
+from datetime import date
 from pathlib import Path
 
-from .config import STANCE_TO_N, VARIABLE_NAMES
+from .config import SCAN_WINDOW_DAYS, STANCE_TO_N, VARIABLE_NAMES
 
 log = logging.getLogger(__name__)
 
@@ -25,6 +26,14 @@ FIELD_RE = re.compile(r"^\*\*([^*]+):\*\*\s*(.*?)\s*$", re.M)
 
 def _sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _source_date_delta_days(run_iso: str, source_iso: str) -> int | None:
+    """Days from source_date to run_date. None if either is not ISO YYYY-MM-DD."""
+    try:
+        return (date.fromisoformat(run_iso) - date.fromisoformat(source_iso)).days
+    except ValueError:
+        return None
 
 
 def _coerce_float(raw: str) -> float | None:
@@ -154,6 +163,21 @@ def parse_report(path: Path) -> tuple[RunMeta, list[dict], list[dict]]:
         for h3_heading, h3_body in _split_on_heading(h2_body, 3):
             entry = _parse_entry(h3_heading, h3_body)
             if entry is None:
+                continue
+
+            delta = _source_date_delta_days(run_date, entry["source_date"])
+            if delta is None:
+                log.warning(
+                    "%s: entry %r has missing or non-ISO source_date %r; skipping",
+                    path, h3_heading, entry["source_date"],
+                )
+                continue
+            if not 0 <= delta <= SCAN_WINDOW_DAYS:
+                log.warning(
+                    "%s: entry %r source_date %s is %d days from run_date %s "
+                    "(allowed [0, %d]); skipping",
+                    path, h3_heading, entry["source_date"], delta, run_date, SCAN_WINDOW_DAYS,
+                )
                 continue
 
             dedup_key = (variable, entry["source"], entry["source_date"])

@@ -26,6 +26,17 @@ def _source_color_map(sources: list[str]) -> dict[str, str]:
     return {s: _PALETTE[i % len(_PALETTE)] for i, s in enumerate(sorted(sources))}
 
 
+_RECENCY_FLOOR = 0.05
+_RECENCY_HALF_LIFE_DAYS = 30
+
+
+def _recency_opacity(source_dates: pd.Series, today: pd.Timestamp) -> list[float]:
+    """Map publication age to marker opacity. Halves every _RECENCY_HALF_LIFE_DAYS."""
+    age = (today - pd.to_datetime(source_dates)).dt.days.clip(lower=0)
+    op = (0.5 ** (age / _RECENCY_HALF_LIFE_DAYS)).clip(lower=_RECENCY_FLOOR)
+    return op.tolist()
+
+
 _MONTHS_FWD_RE = re.compile(r"(\d+)\s*m(?:o(?:nths?)?)?\s*(?:forward|fwd|ahead|out)?", re.I)
 _NEXT_N_RE = re.compile(r"next\s+(\d+)\s*m(?:o(?:nths?)?)?", re.I)
 _YEAR_END_RE = re.compile(r"(?:year[- ]?end|end[- ]?of|end[- ])\s*(\d{4})", re.I)
@@ -62,6 +73,7 @@ def _horizon_to_date(horizon: str, source_date: pd.Timestamp) -> pd.Timestamp | 
 
 def forecast_chart(df: pd.DataFrame) -> go.Figure:
     """Forward-looking outlook by variable. X = target date parsed from horizon."""
+    today = pd.Timestamp.now().normalize()
     d = df.dropna(subset=["value"]).copy()
     d["source_date"] = pd.to_datetime(d["source_date"])
     d["target_date"] = d.apply(
@@ -112,6 +124,7 @@ def forecast_chart(df: pd.DataFrame) -> go.Figure:
                     marker=dict(
                         size=sub_src["conviction_n"].astype(float) * 4 + 4,
                         color=color_map.get(source, "#333"),
+                        opacity=_recency_opacity(sub_src["source_date"], today),
                     ),
                     hovertext=hover,
                     hoverinfo="text",
@@ -120,11 +133,10 @@ def forecast_chart(df: pd.DataFrame) -> go.Figure:
                 row=r, col=c,
             )
 
-    today = pd.Timestamp.now().normalize()
     fig.update_xaxes(range=[today, today + pd.DateOffset(months=12)])
 
     fig.update_layout(
-        title="Forecast outlook by variable (X = forecast target date)",
+        title="Forecast outlook by variable (X = forecast target date; faded = older call)",
         height=700,
         legend=dict(orientation="h", yanchor="bottom", y=-0.18),
         margin=dict(t=70, b=90, l=60, r=40),

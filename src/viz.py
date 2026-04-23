@@ -82,8 +82,9 @@ def forecast_chart(df: pd.DataFrame) -> go.Figure:
     d = d.dropna(subset=["target_date"])
 
     variables = [v["name"] for v in VARIABLES]
-    rows, cols = 2, 3
+    rows, cols = 2, 4
     titles = [f"{v} ({_variable_unit(v)})" for v in variables]
+    titles += [""] * (rows * cols - len(titles))
     fig = make_subplots(
         rows=rows, cols=cols, subplot_titles=titles,
         horizontal_spacing=0.08, vertical_spacing=0.16,

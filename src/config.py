@@ -44,6 +44,12 @@ VARIABLES = [
         "horizon": "12 months forward",
         "stance_semantics": "bullish = higher prices",
     },
+    {
+        "name": "S&P 500",
+        "unit": "idx",
+        "horizon": "12 months forward",
+        "stance_semantics": "bullish = higher prices / above target",
+    },
 ]
 
 VARIABLE_NAMES = [v["name"] for v in VARIABLES]

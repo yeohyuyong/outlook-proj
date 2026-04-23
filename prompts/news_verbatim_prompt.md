@@ -8,18 +8,17 @@ Retrieve every source report on the internal enterprise research platform that (
 
 <research_instructions>
 0. PRE-FLIGHT — PLACEHOLDER CHECK (run before anything else)
-Inspect the TASK block below. If `{{FOCUS_TOPIC}}`, `{{SCAN_WINDOW_START}}`, or `{{SCAN_WINDOW_END}}` still contains unsubstituted template syntax (double curly braces), the user forgot to fill it in. Stop immediately. Produce no H1, no sources, no preamble. Output exactly this single line and nothing else:
+Inspect the TASK block below. If either date slot (Scan Window Start or Scan Window End) still contains unsubstituted template syntax (a `{{…}}` double-curly-brace token), the user forgot to fill it in. Stop immediately. Produce no H1, no sources, no preamble. Output exactly this single line and nothing else:
 
-ERROR: focus topic / scan window not substituted.
+ERROR: scan window not substituted.
 
 Then silently verify, before retrieving anything:
 1. Both scan-window dates are valid ISO `YYYY-MM-DD` dates.
 2. Scan Window End is on or after Scan Window Start.
-3. `{{FOCUS_TOPIC}}` is a non-empty string.
 
-If any of (1)–(3) fails, output exactly:
+If either of (1)–(2) fails, output exactly:
 
-ERROR: invalid scan window or focus topic — [one-phrase reason]
+ERROR: invalid scan window — [one-phrase reason]
 
 and stop.
 
@@ -31,7 +30,7 @@ Only use reports from the internal enterprise research platform. Do not cite ext
 
 3. RETRIEVAL RULES
 - **Relevance.** Include a source if it discusses the Focus Topic — directly, indirectly, or tangentially. When in doubt, include. The downstream prompt will decide whether to keep it.
-- **Temporal gate.** Include a source IFF its publication date D satisfies `{{SCAN_WINDOW_START}} ≤ D ≤ {{SCAN_WINDOW_END}}` (both ends inclusive). Reports outside the window are silently dropped — do NOT emit any placeholder, apology, or "out of window" note.
+- **Temporal gate.** Include a source IFF its publication date D satisfies `Scan Window Start ≤ D ≤ Scan Window End` (both ends inclusive). Reports outside the window are silently dropped — do NOT emit any placeholder, apology, or "out of window" note.
 - **Dated only.** If a report is undated, ambiguous, or stamped as a re-circulation / update of an older note, drop it silently.
 - **One source per `<source>` block.** Never merge multiple reports. If two reports cover the same topic, emit two blocks.
 - **No deduplication by substance.** Even if two sources say nearly the same thing, both are emitted.
@@ -40,7 +39,7 @@ Only use reports from the internal enterprise research platform. Do not cite ext
 3a. PER-SOURCE EXTRACTION ALGORITHM (reason silently; do not print this section)
 For each candidate source the platform returns, run this procedure in order:
 
-1. **Date check.** If the publication date is outside `{{SCAN_WINDOW_START}}..{{SCAN_WINDOW_END}}`, or is ambiguous / undated / marked as a re-circulation, drop silently. Emit nothing.
+1. **Date check.** If the publication date is outside `Scan Window Start..Scan Window End`, or is ambiguous / undated / marked as a re-circulation, drop silently. Emit nothing.
 2. **Relevance check.** If the source does not touch the Focus Topic even tangentially, drop silently.
 3. **Emit `<metadata>`** per §4. Do not guess missing fields — use `UNKNOWN` as the value for any tag whose content the platform does not show.
 4. **Emit `<body>` verbatim** per §4. Copy every relevant paragraph in full, including the report's Executive Summary / Overview / Abstract section if one exists. Do not paraphrase, compress, or elide. When a paragraph contains the Focus Topic AND surrounding context, keep both — the downstream prompt's zero-inference rule needs the context intact.
@@ -89,7 +88,7 @@ For every source that passes §3, emit one `<source>` block containing `<metadat
 
 6. OUTPUT FORMAT — reproduce this structure EXACTLY
 
-# Verbatim Source Dump: {{FOCUS_TOPIC}} — {{SCAN_WINDOW_END}}
+# Verbatim Source Dump: Direct/indirect impact of the Iran war — <scan window end as YYYY-MM-DD>
 
 <source index="1">
   <metadata>
@@ -130,7 +129,7 @@ For every source that passes §3, emit one `<source>` block containing `<metadat
 7. ZERO-SOURCE CASE
 If the retrieval returns no in-window sources on the Focus Topic, emit ONLY:
 
-# Verbatim Source Dump: {{FOCUS_TOPIC}} — {{SCAN_WINDOW_END}}
+# Verbatim Source Dump: Direct/indirect impact of the Iran war — <scan window end as YYYY-MM-DD>
 
 <retrieval_log>
   <total_sources_in_window>0</total_sources_in_window>
@@ -140,7 +139,7 @@ If the retrieval returns no in-window sources on the Focus Topic, emit ONLY:
 Do not apologize, speculate, or suggest the user widen the window.
 
 8. OUTPUT BOUNDARY (the downstream prompt parses this literally — deviations break it)
-- The H1 MUST be `# Verbatim Source Dump: {focus topic as given} — YYYY-MM-DD` with the scan window end as a concrete ISO date. Never emit the literal text `{{FOCUS_TOPIC}}` or `{{SCAN_WINDOW_END}}`, nor a relative phrase like "today" or "this week".
+- The H1 MUST be `# Verbatim Source Dump: Direct/indirect impact of the Iran war — YYYY-MM-DD` with the scan window end as a concrete ISO date. Never emit any literal `{{…}}` token, nor a relative phrase like "today" or "this week".
 - The response contains ONLY: the H1, zero or more `<source>` blocks (each with `index` numbered 1..N in emission order), and exactly one `<retrieval_log>` block at the end.
 - Every `<source>` MUST contain `<metadata>`, `<body>`, and `<exhibits>` tags in that order. `<exhibits>` may be empty (`<exhibits></exhibits>`) but must be present.
 - `total_sources_in_window` MUST equal `emitted` MUST equal the number of `<source>` blocks. If they disagree, you have silently dropped a source — go back and add it.
@@ -148,7 +147,7 @@ Do not apologize, speculate, or suggest the user widen the window.
 </research_instructions>
 
 <task>
-Focus Topic: {{FOCUS_TOPIC}}
+Focus Topic: Direct/indirect impact of the Iran war
 
 Scan Window Start: {{SCAN_WINDOW_START}}
 Scan Window End:   {{SCAN_WINDOW_END}}

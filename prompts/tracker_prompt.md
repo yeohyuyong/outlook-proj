@@ -91,7 +91,7 @@ Only use reports from the internal enterprise research platform. Do not cite ext
 
 6. OUTPUT FORMAT — reproduce this structure EXACTLY
 
-# Macro Outlook Tracker: {{SCAN_WINDOW_END}}
+# Macro Outlook Tracker: <scan window end as YYYY-MM-DD>
 
 ## Core CPI YoY (%)
 
@@ -142,7 +142,7 @@ If no eligible sources for a variable, include the H2 heading with exactly this 
 Spot levels are produced by a separate prompt (`spot_prompt.md`) that runs independently and writes its own report file consumed by the same `parse.py`. Do NOT emit a `## Current Spot Levels` section here. If you do, the downstream join will see two conflicting spot rows for the same `run_date`.
 
 9. OUTPUT BOUNDARY (the pipeline parses this literally — deviations break it)
-- The H1 title MUST be a concrete ISO date matching Scan Window End, in the form `# Macro Outlook Tracker: YYYY-MM-DD`. Never emit the literal text `{{SCAN_WINDOW_END}}`, a relative phrase like "today" or "this week", or a non-ISO format.
+- The H1 title MUST be a concrete ISO date matching Scan Window End, in the form `# Macro Outlook Tracker: YYYY-MM-DD`. Never emit any literal `{{…}}` token, a relative phrase like "today" or "this week", or a non-ISO format.
 - The response contains ONLY: the H1 title and the seven variable H2 sections in the order given in §3. No `## Current Spot Levels` section. No preamble, no postamble, no meta-commentary, no reasoning traces from §3a, no code fences wrapping the markdown.
 - Every `###` block must include all ten mandatory fields from §4, using the exact label casing shown (including `Source URL`, `Source date`, `Horizon (months)`, `Key claim`). Missing or relabelled fields break `parse.py`.
 - If §0 (placeholder check) or the SCAN WINDOW verification failed, ignore this section entirely and emit only the single `ERROR: ...` line specified there.

@@ -47,9 +47,9 @@ Spot levels are public market data, not proprietary research. Use the canonical 
 - **Brent Oil** → ICE Brent front-month → EIA Brent spot. Report the most recent close or daily spot.
 - **S&P 500** → S&P Global SPX page → Bloomberg `SPX:IND`. Report the most recent close.
 
-5. FRESHNESS WINDOWS (compared against {{AS_OF_DATE}})
-- Tradeable instruments (Fed Funds Rate, US 10y, DXY, Brent, S&P 500): As-of must be within **7 calendar days** of {{AS_OF_DATE}}. If the latest available print is older, treat as unavailable per §6.
-- Monthly/quarterly economic prints (Core CPI YoY, US Real GDP Growth): As-of must be within **60 calendar days** of {{AS_OF_DATE}}. If older, treat as unavailable per §6.
+5. FRESHNESS WINDOWS (compared against the as-of date)
+- Tradeable instruments (Fed Funds Rate, US 10y, DXY, Brent, S&P 500): As-of must be within **7 calendar days** of the as-of date. If the latest available print is older, treat as unavailable per §6.
+- Monthly/quarterly economic prints (Core CPI YoY, US Real GDP Growth): As-of must be within **60 calendar days** of the as-of date. If older, treat as unavailable per §6.
 
 6. UNAVAILABLE VALUES (the N/A rule — make absence costly)
 Only emit `N/A` after attempting at least **two** canonical sources for that variable. When emitting `N/A`, append a parenthetical `(tried: source1; source2)` after `N/A` in the Spot column so the failure is auditable. Never omit a row — the table must always have all seven rows in the order given in §3.
@@ -59,7 +59,7 @@ Example row when unavailable:
 
 7. OUTPUT FORMAT — reproduce this structure EXACTLY
 
-# Macro Outlook Tracker: {{AS_OF_DATE}}
+# Macro Outlook Tracker: <as-of date as YYYY-MM-DD>
 
 ## Current Spot Levels
 
@@ -74,7 +74,7 @@ Example row when unavailable:
 | S&P 500                | [val]  | [YYYY-MM-DD] | [source]                 | [URL]      |
 
 8. OUTPUT BOUNDARY (the pipeline parses this literally — deviations break it)
-- The H1 MUST be `# Macro Outlook Tracker: YYYY-MM-DD` matching {{AS_OF_DATE}}. The `Macro Outlook Tracker:` prefix is required by `parse.py` (`H1_RE`) — keep it verbatim even though this prompt only emits spot data. Never emit the literal text `{{AS_OF_DATE}}` or a relative phrase like "today".
+- The H1 MUST be `# Macro Outlook Tracker: YYYY-MM-DD` matching the as-of date. The `Macro Outlook Tracker:` prefix is required by `parse.py` (`H1_RE`) — keep it verbatim even though this prompt only emits spot data. Never emit any literal `{{…}}` token or a relative phrase like "today".
 - The response contains ONLY: the H1 title and the `## Current Spot Levels` H2 with its seven-row table. No other H2s. No preamble, no postamble, no meta-commentary, no code fences wrapping the markdown.
 - Variable names in the first column must match the names in §3 exactly (case and spelling). `parse.py` rejects unknown variables with a warning and drops the row.
 - If §0 verification failed, ignore this section entirely and emit only the single `ERROR: ...` line specified there.

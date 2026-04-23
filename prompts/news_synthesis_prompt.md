@@ -14,9 +14,9 @@ Produce a structured intelligence report on the Focus Topic given in the TASK bl
 PRE-FLIGHT — PLACEHOLDER & INPUT CHECK (run before anything else)
 Inspect the TASK block and the `<verbatim_input>` block below.
 
-- If `{{FOCUS_TOPIC}}`, `{{SCAN_WINDOW_START}}`, or `{{SCAN_WINDOW_END}}` still contains unsubstituted template syntax (double curly braces), stop immediately. Output exactly:
+- If either date slot (Scan Window Start or Scan Window End) in the TASK block still contains unsubstituted template syntax (a `{{…}}` double-curly-brace token), stop immediately. Output exactly:
 
-  ERROR: focus topic / scan window not substituted.
+  ERROR: scan window not substituted.
 
 - If `<verbatim_input>` is missing, empty, or contains only whitespace or the template placeholder `[Paste Stage A output here]`, stop immediately. Output exactly:
 
@@ -74,7 +74,7 @@ If any threshold is not met, the verdict is EXCLUDE.
 For each `<source>` in `<verbatim_input>`, run this procedure in order (reason silently; emit only the outputs specified in `<output_structure>`):
 
 1. **Metadata snapshot.** Read `<metadata>`. Note `title`, `publication_date`, `url`, `category_hint`.
-2. **Window check.** Compare `publication_date` against `{{SCAN_WINDOW_START}}..{{SCAN_WINDOW_END}}`. If outside or ambiguous → set `within_scan_window=NO` → `overall_verdict=EXCLUDE` → skip to step 8.
+2. **Window check.** Compare `publication_date` against the scan window bounds given in the TASK block. If outside or ambiguous → set `within_scan_window=NO` → `overall_verdict=EXCLUDE` → skip to step 8.
 3. **URL check.** Inspect `<url>`. Apply the `<exclusion_triggers>` URL rules (fully-qualified `https` domain required; reject `grn://`, internal aliases, raw image files). If non-qualifying → set `url_direct_fully_qualified=NO` → `overall_verdict=EXCLUDE` → skip to step 8.
 4. **Substance gate — `current_situation`.** Scan `<body>` for ≥3 distinct quantitative data points with units. Pull the exact passages into `source_evidence`. Verdict PASS/FAIL.
 5. **Substance gates — `potential_developments`, `impact_to_sectors`, `broader_outlook`.** Evaluate each per `<substance_thresholds>`, quoting directly from `<body>`. **If for any gate you find yourself about to write a `<exclusion_triggers>` prohibited phrase to describe an absence, STOP** — that gate's verdict is FAIL and `overall_verdict=EXCLUDE` immediately. Do not paraphrase around the absence.
@@ -166,7 +166,7 @@ Do NOT silently drop any `<source>`. Every source in `<verbatim_input>` must app
 <exclusion_triggers>
 These are hard exclusion triggers. Do NOT attempt to work around them.
 
-**Out-of-window.** If the `<publication_date>` field inside `<metadata>` falls outside `{{SCAN_WINDOW_START}} .. {{SCAN_WINDOW_END}}`, set `within_scan_window=NO` and `overall_verdict=EXCLUDE`. If the publication date is ambiguous or undated, EXCLUDE. (Stage A should have filtered already, but this is a defense-in-depth re-check.)
+**Out-of-window.** If the `<publication_date>` field inside `<metadata>` falls outside the scan window bounds given in the TASK block, set `within_scan_window=NO` and `overall_verdict=EXCLUDE`. If the publication date is ambiguous or undated, EXCLUDE. (Stage A should have filtered already, but this is a defense-in-depth re-check.)
 
 **Non-qualifying URL.** The `<url>` field must be a direct, fully-qualified URL (e.g., `https://.../*.pdf`). EXCLUDE if:
 - Internal reference path or storage key (e.g., `grn://...`, short internal alias, any URL whose domain is not a fully qualified domain name).
@@ -429,7 +429,7 @@ If any confirmation cannot be YES, go back and fix (by excluding the offending f
 <output_structure>
 Your final output, in this order:
 
-1. H1 title: `# Enterprise Risk Intelligence: {{FOCUS_TOPIC}} — {{SCAN_WINDOW_END}}`
+1. H1 title: `# Enterprise Risk Intelligence: Direct/indirect impact of the Iran war — <scan window end as YYYY-MM-DD>`
 2. For each INCLUDE source: the full `<eligibility>` block, followed immediately by the finding. Group these by category (sequence in `<categories>`), newest first within each category. EXCLUDE sources do NOT appear here — they go into the rejection log below.
 3. A single consolidated `<rejected_sources>` block listing every excluded `<source>`, with a one-line reason each. If zero sources were excluded, emit an empty `<rejected_sources></rejected_sources>`.
 4. The `<self_check>` block, with numeric totals that reconcile (`total_candidates_considered = included + excluded = number of <source> blocks in <verbatim_input>`).
@@ -442,7 +442,7 @@ No preamble, no postamble, no meta-commentary outside the structure above. No co
 ---
 
 <task>
-Focus Topic: {{FOCUS_TOPIC}}
+Focus Topic: Direct/indirect impact of the Iran war
 
 Scan Window Start: {{SCAN_WINDOW_START}}
 Scan Window End:   {{SCAN_WINDOW_END}}

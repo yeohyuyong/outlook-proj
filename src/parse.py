@@ -114,6 +114,19 @@ def _parse_entry(source_title: str, body: str) -> dict | None:
     }
 
 
+def _entry_dedup_key(variable: str, entry: dict) -> tuple[str, ...]:
+    """Prefer report URL identity; fall back to title-level identity when absent."""
+    source_url = entry.get("source_url", "").strip()
+    if source_url:
+        return (variable, source_url)
+    return (
+        variable,
+        entry.get("source", "").strip(),
+        entry.get("source_title", "").strip(),
+        entry.get("source_date", "").strip(),
+    )
+
+
 def _parse_spot_table(body: str, run_date: str) -> list[dict]:
     """Extract spot rows from the body of a `## Current Spot Levels` H2 section.
 
@@ -167,7 +180,7 @@ def parse_report(path: Path) -> tuple[RunMeta, list[dict], list[dict]]:
 
     rows: list[dict] = []
     spot_rows: list[dict] = []
-    seen: set[tuple[str, str, str]] = set()
+    seen: set[tuple[str, ...]] = set()
 
     for h2_heading, h2_body in _split_on_heading(text, 2):
         if h2_heading.strip().lower().startswith("current spot levels"):
@@ -198,11 +211,11 @@ def parse_report(path: Path) -> tuple[RunMeta, list[dict], list[dict]]:
                 )
                 continue
 
-            dedup_key = (variable, entry["source"], entry["source_date"])
+            dedup_key = _entry_dedup_key(variable, entry)
             if dedup_key in seen:
                 log.warning(
-                    "%s: duplicate entry for %s / %s / %s; keeping first",
-                    path, variable, entry["source"], entry["source_date"],
+                    "%s: duplicate entry for %s / %s; keeping first",
+                    path, variable, entry["source_title"],
                 )
                 continue
             seen.add(dedup_key)

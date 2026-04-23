@@ -56,24 +56,24 @@ def _entry_block(title, source, url, src_date, value, stance):
         f"**Value:** {value}\n"
         f"**Unit:** %\n"
         f"**Horizon:** 12m forward\n"
+        f"**Horizon (months):** 12\n"
         f"**Stance:** {stance}\n"
         f"**Key claim:** claim\n"
         f"**Evidence:** evidence\n\n"
     )
 
 
-def test_parse_drops_out_of_window_and_undated(tmp_path):
+def test_parse_keeps_valid_older_entries_but_skips_undated_and_future(tmp_path):
     report = tmp_path / "2026-04-23.md"
     body = (
         "# Macro Outlook Tracker: 2026-04-23\n\n"
         "## Core CPI YoY (%)\n\n"
-        # in-window: 3 days old → kept
+        # Older-than-a-week entries are still valid; scan-window filtering happens upstream.
+        + _entry_block("Older note", "Goldman Sachs", "https://x/older", "2026-04-01", "2.7", "bearish")
+        # Recent valid entry → kept
         + _entry_block("In-window note", "Goldman Sachs", "https://x/1", "2026-04-20", "2.7", "bearish")
-        # out-of-window: 8 days old → dropped
-        + _entry_block("Too-old note", "JPMorgan", "https://x/2", "2026-04-15", "3.0", "bullish")
         # undated → dropped
         + _entry_block("Undated note", "Citi", "https://x/3", "TBD", "2.5", "neutral")
-        # on the start boundary: exactly 7 days → kept (inclusive)
         + _entry_block("Boundary note", "Morgan Stanley", "https://x/4", "2026-04-16", "2.6", "bullish")
         # future-dated: negative delta → dropped
         + _entry_block("Future note", "Barclays", "https://x/5", "2026-04-25", "2.9", "bullish")
@@ -81,5 +81,48 @@ def test_parse_drops_out_of_window_and_undated(tmp_path):
     report.write_text(body)
 
     _meta, entries, _spot = parse_report(report)
-    sources = {e["source"] for e in entries}
-    assert sources == {"Goldman Sachs", "Morgan Stanley"}
+    titles = {e["source_title"] for e in entries}
+    assert titles == {"Older note", "In-window note", "Boundary note"}
+
+
+def test_parse_keeps_distinct_same_source_same_date_notes(tmp_path):
+    report = tmp_path / "2026-04-23.md"
+    body = (
+        "# Macro Outlook Tracker: 2026-04-23\n\n"
+        "## Core CPI YoY (%)\n\n"
+        + _entry_block("Morgan Stanley — Inflation Daily", "Morgan Stanley", "https://x/ms-note-1", "2026-04-20", "2.7", "bearish")
+        + _entry_block("Morgan Stanley — Inflation Weekly", "Morgan Stanley", "https://x/ms-note-2", "2026-04-20", "2.9", "bullish")
+    )
+    report.write_text(body)
+
+    _meta, entries, _spot = parse_report(report)
+
+    assert len(entries) == 2
+    assert {e["source_title"] for e in entries} == {
+        "Morgan Stanley — Inflation Daily",
+        "Morgan Stanley — Inflation Weekly",
+    }
+
+
+def test_parse_dedupes_exact_duplicate_entries(tmp_path):
+    report = tmp_path / "2026-04-23.md"
+    duplicate = _entry_block(
+        "Goldman Sachs — Inflation Update",
+        "Goldman Sachs",
+        "https://x/duplicate",
+        "2026-04-20",
+        "2.8",
+        "bearish",
+    )
+    body = (
+        "# Macro Outlook Tracker: 2026-04-23\n\n"
+        "## Core CPI YoY (%)\n\n"
+        + duplicate
+        + duplicate
+    )
+    report.write_text(body)
+
+    _meta, entries, _spot = parse_report(report)
+
+    assert len(entries) == 1
+    assert entries[0]["source_url"] == "https://x/duplicate"

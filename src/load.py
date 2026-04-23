@@ -38,6 +38,19 @@ def _atomic_write_csv(path: Path, columns: list[str], rows: list[dict]) -> None:
     tmp.replace(path)
 
 
+def _existing_run_timestamps(path: Path) -> dict[tuple[str, str], str]:
+    if not path.exists():
+        return {}
+
+    with path.open(newline="", encoding="utf-8") as fp:
+        rows = csv.DictReader(fp)
+        return {
+            (row.get("file_path", ""), row.get("file_sha256", "")): row.get("ingested_at", "")
+            for row in rows
+            if row.get("file_path") and row.get("file_sha256") and row.get("ingested_at")
+        }
+
+
 def ingest_all(
     reports_dir: Path | None = None,
     entries_path: Path | None = None,
@@ -55,6 +68,7 @@ def ingest_all(
     runs_path = runs_path or RUNS_CSV
     levels_path = levels_path or LEVELS_CSV
     ingested_at = now or datetime.now().isoformat(timespec="seconds")
+    prior_timestamps = _existing_run_timestamps(runs_path)
 
     md_files = sorted(p for p in reports_dir.glob("*.md"))
 
@@ -75,7 +89,7 @@ def ingest_all(
             "file_path": meta.file_path,
             "file_sha256": meta.file_sha256,
             "n_entries": len(entries),
-            "ingested_at": ingested_at,
+            "ingested_at": prior_timestamps.get((meta.file_path, meta.file_sha256), ingested_at),
         })
 
     _atomic_write_csv(entries_path, ENTRY_COLUMNS, all_entries)

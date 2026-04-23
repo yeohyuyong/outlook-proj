@@ -66,7 +66,7 @@ Before writing any `###` block, run the following pass internally:
   - "no directional view on this variable"
   - "duplicate of <other source title>"
 - Only emit a `###` block for candidates marked `include`.
-- Do NOT print the include/exclude list in the final output. The final output is strictly the markdown specified in §6 and §8.
+- Do NOT print the include/exclude list in the final output. The final output is strictly the markdown specified in §6.
 
 4. PER-ENTRY FIELDS (all mandatory; use the exact labels and casing)
 
@@ -138,25 +138,12 @@ If no eligible sources for a variable, include the H2 heading with exactly this 
 
 *No eligible sources for this variable in the current scan window.*
 
-8. CURRENT SPOT LEVELS (exempt from the scan window)
-
-After the seven variable sections, append this exact H2 section. For each variable, return the most recent available spot/print regardless of when the source was published. Use the latest official print for released economic indicators (CPI, GDP) and the most recent close for tradeable instruments (rates, FX, equities, oil). The Source URL must point to the page where the spot value was published. If a value is unavailable, write `N/A` in the Spot column — do not omit the row.
-
-## Current Spot Levels
-
-| Variable               | Spot   | As-of      | Source                     | Source URL |
-|------------------------|-------:|------------|----------------------------|------------|
-| Core CPI YoY           | [val]  | [YYYY-MM-DD] | [release / index source] | [URL]      |
-| Fed Funds Rate         | [val]  | [YYYY-MM-DD] | [source]                 | [URL]      |
-| US 10y Treasury Yield  | [val]  | [YYYY-MM-DD] | [source]                 | [URL]      |
-| DXY Index              | [val]  | [YYYY-MM-DD] | [source]                 | [URL]      |
-| US Real GDP Growth     | [val]  | [YYYY-MM-DD] | [source]                 | [URL]      |
-| Brent Oil              | [val]  | [YYYY-MM-DD] | [source]                 | [URL]      |
-| S&P 500                | [val]  | [YYYY-MM-DD] | [source]                 | [URL]      |
+8. CURRENT SPOT LEVELS — out of scope for this prompt
+Spot levels are produced by a separate prompt (`spot_prompt.md`) that runs independently and writes its own report file consumed by the same `parse.py`. Do NOT emit a `## Current Spot Levels` section here. If you do, the downstream join will see two conflicting spot rows for the same `run_date`.
 
 9. OUTPUT BOUNDARY (the pipeline parses this literally — deviations break it)
 - The H1 title MUST be a concrete ISO date matching Scan Window End, in the form `# Macro Outlook Tracker: YYYY-MM-DD`. Never emit the literal text `{{SCAN_WINDOW_END}}`, a relative phrase like "today" or "this week", or a non-ISO format.
-- The response contains ONLY: the H1 title, the seven variable H2 sections in the order given in §3, and the `## Current Spot Levels` H2 section. No preamble, no postamble, no meta-commentary, no reasoning traces from §3a, no code fences wrapping the markdown.
+- The response contains ONLY: the H1 title and the seven variable H2 sections in the order given in §3. No `## Current Spot Levels` section. No preamble, no postamble, no meta-commentary, no reasoning traces from §3a, no code fences wrapping the markdown.
 - Every `###` block must include all ten mandatory fields from §4, using the exact label casing shown (including `Source URL`, `Source date`, `Horizon (months)`, `Key claim`). Missing or relabelled fields break `parse.py`.
 - If §0 (placeholder check) or the SCAN WINDOW verification failed, ignore this section entirely and emit only the single `ERROR: ...` line specified there.
 </research_instructions>

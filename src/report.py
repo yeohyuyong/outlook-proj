@@ -21,8 +21,7 @@ def build_html(
 
     df = pd.read_csv(entries_path, parse_dates=["run_date", "source_date"])
 
-    fig1 = viz.forecast_trajectories(df)
-    fig1b = viz.forecast_term_structure(df)
+    fig1 = viz.forecast_chart(df)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     generated = datetime.now().isoformat(timespec="seconds")
@@ -43,10 +42,7 @@ def build_html(
             "<h1>Macro Outlook Tracker</h1>\n"
             f"<p class='meta'>Generated {generated}</p>\n"
         )
-        # Embed plotly.js inline on the first figure so the HTML works offline;
-        # subsequent figures reuse the already-loaded library.
         fp.write(fig1.to_html(full_html=False, include_plotlyjs=True))
-        fp.write(fig1b.to_html(full_html=False, include_plotlyjs=False))
         fp.write(
             "<script>\n"
             "document.querySelectorAll('.plotly-graph-div').forEach(function(el){\n"

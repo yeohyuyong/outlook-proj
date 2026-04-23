@@ -60,12 +60,8 @@ def _horizon_to_date(horizon: str, source_date: pd.Timestamp) -> pd.Timestamp | 
     return None
 
 
-def forecast_term_structure(df: pd.DataFrame) -> go.Figure:
-    """Viz 1b — same grid, but X is the target date parsed from the horizon field.
-
-    Useful as a sanity check: points should cluster near each variable's canonical
-    horizon. Scatter on X flags sources quoting off-horizon forecasts.
-    """
+def forecast_chart(df: pd.DataFrame) -> go.Figure:
+    """Forward-looking outlook by variable. X = target date parsed from horizon."""
     d = df.dropna(subset=["value"]).copy()
     d["source_date"] = pd.to_datetime(d["source_date"])
     d["target_date"] = d.apply(
@@ -124,72 +120,11 @@ def forecast_term_structure(df: pd.DataFrame) -> go.Figure:
                 row=r, col=c,
             )
 
-    fig.update_layout(
-        title="Forecast term structure (X = target date parsed from horizon)",
-        height=700,
-        legend=dict(orientation="h", yanchor="bottom", y=-0.18),
-        margin=dict(t=70, b=90, l=60, r=40),
-    )
-    return fig
-
-
-def forecast_trajectories(df: pd.DataFrame) -> go.Figure:
-    """Viz 1 — 6 small multiples, one per variable, lines per source."""
-    d = df.dropna(subset=["value"]).copy()
-    d["source_date"] = pd.to_datetime(d["source_date"])
-
-    variables = [v["name"] for v in VARIABLES]
-    rows, cols = 2, 3
-    titles = [f"{v} ({_variable_unit(v)})" for v in variables]
-    fig = make_subplots(
-        rows=rows, cols=cols, subplot_titles=titles,
-        horizontal_spacing=0.08, vertical_spacing=0.16,
-    )
-
-    color_map = _source_color_map(d["source"].unique().tolist() if not d.empty else [])
-    legend_shown: set[str] = set()
-
-    for idx, variable in enumerate(variables):
-        r, c = idx // cols + 1, idx % cols + 1
-        sub = d[d["variable"] == variable]
-        if sub.empty:
-            continue
-        for source, sub_src in sub.groupby("source"):
-            sub_src = sub_src.sort_values("source_date")
-            hover = [
-                f"<b>{source}</b><br>"
-                f"{row.source_date.date()}<br>"
-                f"value: {row.value} {row.unit}<br>"
-                f"horizon: {row.horizon}<br>"
-                f"stance: {row.stance} / {row.conviction}<br>"
-                f"{row.key_claim}<br>"
-                f"<i>{row.source_title} — shift+click to open</i>"
-                for row in sub_src.itertuples()
-            ]
-            show = source not in legend_shown
-            legend_shown.add(source)
-            fig.add_trace(
-                go.Scatter(
-                    x=sub_src["source_date"],
-                    y=sub_src["value"],
-                    mode="lines+markers",
-                    name=source,
-                    legendgroup=source,
-                    showlegend=show,
-                    line=dict(color=color_map.get(source, "#333")),
-                    marker=dict(
-                        size=sub_src["conviction_n"].astype(float) * 4 + 4,
-                        color=color_map.get(source, "#333"),
-                    ),
-                    hovertext=hover,
-                    hoverinfo="text",
-                    customdata=sub_src["source_url"].fillna("").tolist(),
-                ),
-                row=r, col=c,
-            )
+    today = pd.Timestamp.now().normalize()
+    fig.update_xaxes(range=[today, today + pd.DateOffset(months=12)])
 
     fig.update_layout(
-        title="Forecast trajectories by variable",
+        title="Forecast outlook by variable (X = forecast target date)",
         height=700,
         legend=dict(orientation="h", yanchor="bottom", y=-0.18),
         margin=dict(t=70, b=90, l=60, r=40),

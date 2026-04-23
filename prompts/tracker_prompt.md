@@ -41,17 +41,18 @@ Rules for this section:
 - For each variable, find every eligible source (per §2) that takes a view on it.
 - ONE SOURCE PER ENTRY — do not merge multiple sources into one `###` block.
 - The same source appearing under two variables produces two separate entries (one per variable).
+- Horizon bucket (see §4): for six of the seven variables, every entry must quantize to an integer month in [1, 18]. **US Real GDP Growth is exempt** — GDP is a calendar-year aggregate and uses `year-end YYYY` horizon labels instead.
 
 <variables>
-| Variable               | Canonical horizon       | Unit   | Stance semantics                                              |
-|------------------------|-------------------------|--------|---------------------------------------------------------------|
-| Core CPI YoY           | next 12 months          | %      | bullish = higher/stickier; bearish = lower/faster disinflation|
-| Fed Funds Rate         | year-end current year   | %      | bullish = hawkish (higher path); bearish = dovish             |
-| US 10y Treasury Yield  | 12 months forward       | %      | bullish = higher yields; bearish = lower yields               |
-| DXY Index              | 12 months forward       | idx    | bullish = stronger USD                                        |
-| US Real GDP Growth     | current calendar year   | %      | bullish = above consensus / accelerating                      |
-| Brent Oil              | 12 months forward       | $/bbl  | bullish = higher prices                                       |
-| S&P 500                | 12 months forward       | idx    | bullish = higher prices / above target                        |
+| Variable               | Unit   | Stance semantics                                              |
+|------------------------|--------|---------------------------------------------------------------|
+| Core CPI YoY           | %      | bullish = higher/stickier; bearish = lower/faster disinflation|
+| Fed Funds Rate         | %      | bullish = hawkish (higher path); bearish = dovish             |
+| US 10y Treasury Yield  | %      | bullish = higher yields; bearish = lower yields               |
+| DXY Index              | idx    | bullish = stronger USD                                        |
+| US Real GDP Growth     | %      | bullish = above consensus / accelerating                      |
+| Brent Oil              | $/bbl  | bullish = higher prices                                       |
+| S&P 500                | idx    | bullish = higher prices / above target                        |
 </variables>
 
 3a. EXTRACTION PROTOCOL (reason silently; do not print this section)
@@ -73,9 +74,13 @@ Before writing any `###` block, run the following pass internally:
 - **Source:** institution name only (e.g. "Goldman Sachs"). Generic attributions like "analysts say" are not acceptable.
 - **Source URL:** direct, accessible URL to the source report.
 - **Source date:** YYYY-MM-DD publication date of the source note.
-- **Value:** the source's numeric forecast at the canonical horizon. If the source takes a directional view without a number, write `N/A`.
+- **Value:** the source's numeric forecast at the stated Horizon. If the source takes a directional view without a number, write `N/A`.
 - **Unit:** must match the variable's unit from the table above.
-- **Horizon:** the horizon in the source's own words (e.g. "Q3 2026", "year-end 2026", "12m forward"). If the source forecasts a non-canonical horizon, extract the closest available value and note the actual horizon here.
+- **Horizon:** the horizon in the source's own words (e.g. "Q3 2026", "year-end 2026", "12m forward"). For **US Real GDP Growth**, use the form `year-end YYYY` where YYYY is the forecast calendar year.
+- **Horizon (months):** an integer from 1 to 18 inclusive, equal to the whole number of months from **Source date** to the target date of the source's forecast, rounded half-up (ties go to the farther month). If this value is outside [1, 18], exclude the source entirely. For **US Real GDP Growth only**, emit `N/A` — GDP is a calendar-year aggregate and is not bucketed by months. Worked examples:
+  - Source dated 2026-04-22, forecast "Q3 2026" → target ≈ 2026-09-30 → `5`.
+  - Source dated 2026-01-22, forecast "year-end 2026" → target = 2026-12-31 → `11`.
+  - Source dated 2026-04-22, forecast "year-end 2027" → ≈ 20 months → exclude.
 - **Stance:** `bullish` | `neutral` | `bearish` (per the semantics above).
 - **Key claim:** one sentence, ≤ 25 words, stating the source's core forecast or view.
 - **Evidence:** one sentence quoting or paraphrasing the specific passage that justifies the value and stance.
@@ -97,6 +102,7 @@ Only use reports from the internal enterprise research platform. Do not cite ext
 **Value:** [number or N/A]
 **Unit:** %
 **Horizon:** [horizon string]
+**Horizon (months):** [integer 1-18, or N/A for US Real GDP Growth]
 **Stance:** [bullish | neutral | bearish]
 **Key claim:** [≤ 25 words]
 **Evidence:** [one-sentence paraphrase or quote]
@@ -151,6 +157,6 @@ After the seven variable sections, append this exact H2 section. For each variab
 9. OUTPUT BOUNDARY (the pipeline parses this literally — deviations break it)
 - The H1 title MUST be a concrete ISO date matching Scan Window End, in the form `# Macro Outlook Tracker: YYYY-MM-DD`. Never emit the literal text `{{SCAN_WINDOW_END}}`, a relative phrase like "today" or "this week", or a non-ISO format.
 - The response contains ONLY: the H1 title, the seven variable H2 sections in the order given in §3, and the `## Current Spot Levels` H2 section. No preamble, no postamble, no meta-commentary, no reasoning traces from §3a, no code fences wrapping the markdown.
-- Every `###` block must include all nine mandatory fields from §4, using the exact label casing shown (including `Source URL`, `Source date`, `Key claim`). Missing or relabelled fields break `parse.py`.
+- Every `###` block must include all ten mandatory fields from §4, using the exact label casing shown (including `Source URL`, `Source date`, `Horizon (months)`, `Key claim`). Missing or relabelled fields break `parse.py`.
 - If §0 (placeholder check) or the SCAN WINDOW verification failed, ignore this section entirely and emit only the single `ERROR: ...` line specified there.
 </research_instructions>

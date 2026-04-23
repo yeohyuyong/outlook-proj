@@ -79,9 +79,17 @@ def forecast_chart(
     today = pd.Timestamp.now().normalize()
     d = df.dropna(subset=["value"]).copy()
     d["source_date"] = pd.to_datetime(d["source_date"])
-    d["target_date"] = d.apply(
-        lambda r: _horizon_to_date(r["horizon"], r["source_date"]), axis=1
-    )
+
+    def _target(r: pd.Series) -> pd.Timestamp | None:
+        n = r.get("horizon_months") if "horizon_months" in r else None
+        if pd.notna(n):
+            try:
+                return r["source_date"] + pd.DateOffset(months=int(n))
+            except (TypeError, ValueError):
+                pass
+        return _horizon_to_date(r["horizon"], r["source_date"])
+
+    d["target_date"] = d.apply(_target, axis=1)
     d = d.dropna(subset=["target_date"])
 
     variables = [v["name"] for v in VARIABLES]

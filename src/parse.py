@@ -49,6 +49,24 @@ def _coerce_float(raw: str) -> float | None:
         return None
 
 
+def _coerce_horizon_months(raw: str) -> int | None:
+    """Integer 1..18, or None if missing / N/A (e.g. US Real GDP Growth) / invalid."""
+    if not raw:
+        return None
+    cleaned = raw.strip()
+    if cleaned.lower() in {"n/a", "na", "none", "null", "-", ""}:
+        return None
+    try:
+        n = int(cleaned)
+    except ValueError:
+        log.warning("could not parse horizon_months as int: %r", raw)
+        return None
+    if n < 1 or n > 18:
+        log.warning("horizon_months %d out of [1, 18]; storing as None", n)
+        return None
+    return n
+
+
 def _split_on_heading(text: str, level: int) -> list[tuple[str, str]]:
     """Split markdown on H<level> headings. Returns (heading_text, body) tuples."""
     prefix = "#" * level + " "
@@ -88,6 +106,7 @@ def _parse_entry(source_title: str, body: str) -> dict | None:
         "value": _coerce_float(fields.get("value", "")),
         "unit": fields.get("unit", ""),
         "horizon": fields.get("horizon", ""),
+        "horizon_months": _coerce_horizon_months(fields.get("horizon (months)", "")),
         "stance": stance_raw,
         "stance_n": STANCE_TO_N[stance_raw],
         "key_claim": fields.get("key claim", ""),

@@ -7,21 +7,27 @@ from pathlib import Path
 import pandas as pd
 
 from . import viz
-from .config import DATA_DIR, ENTRIES_CSV
+from .config import DATA_DIR, ENTRIES_CSV, LEVELS_CSV
 
 DASHBOARD_HTML = DATA_DIR / "dashboard.html"
 
 
 def build_html(
     entries_path: Path | None = None,
+    levels_path: Path | None = None,
     out_path: Path | None = None,
 ) -> Path:
     entries_path = entries_path or ENTRIES_CSV
+    levels_path = levels_path or LEVELS_CSV
     out_path = out_path or DASHBOARD_HTML
 
     df = pd.read_csv(entries_path, parse_dates=["run_date", "source_date"])
 
-    fig1 = viz.forecast_chart(df)
+    levels_df = None
+    if levels_path.exists():
+        levels_df = pd.read_csv(levels_path, parse_dates=["run_date", "as_of_date"])
+
+    fig1 = viz.forecast_chart(df, current_levels=levels_df)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     generated = datetime.now().isoformat(timespec="seconds")

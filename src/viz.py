@@ -71,7 +71,10 @@ def _horizon_to_date(horizon: str, source_date: pd.Timestamp) -> pd.Timestamp | 
     return None
 
 
-def forecast_chart(df: pd.DataFrame) -> go.Figure:
+def forecast_chart(
+    df: pd.DataFrame,
+    current_levels: pd.DataFrame | None = None,
+) -> go.Figure:
     """Forward-looking outlook by variable. X = target date parsed from horizon."""
     today = pd.Timestamp.now().normalize()
     d = df.dropna(subset=["value"]).copy()
@@ -134,10 +137,50 @@ def forecast_chart(df: pd.DataFrame) -> go.Figure:
                 row=r, col=c,
             )
 
+    if current_levels is not None and not current_levels.empty:
+        latest = (
+            current_levels.dropna(subset=["value"])
+            .sort_values("as_of_date")
+            .groupby("variable")
+            .last()
+        )
+        x_left = today
+        x_right = today + pd.DateOffset(months=12)
+        for idx, variable in enumerate(variables):
+            if variable not in latest.index:
+                continue
+            r, c = idx // cols + 1, idx % cols + 1
+            spot = latest.loc[variable, "value"]
+            source = latest.loc[variable, "source"]
+            as_of = pd.to_datetime(latest.loc[variable, "as_of_date"]).date()
+            url = latest.loc[variable, "source_url"] if "source_url" in latest.columns else ""
+            url = url if isinstance(url, str) else ""
+            hint = "<i>shift+click to open source</i>" if url else ""
+            hover = (
+                f"<b>now: {spot}</b><br>"
+                f"{source}<br>"
+                f"as of {as_of}"
+                + (f"<br>{hint}" if hint else "")
+            )
+            fig.add_trace(
+                go.Scatter(
+                    x=[x_left, x_right],
+                    y=[spot, spot],
+                    mode="lines",
+                    line=dict(color="#c0392b", dash="dash", width=1.2),
+                    hovertext=[hover, hover],
+                    hoverinfo="text",
+                    customdata=[url, url],
+                    showlegend=False,
+                    name=f"spot — {variable}",
+                ),
+                row=r, col=c,
+            )
+
     fig.update_xaxes(range=[today, today + pd.DateOffset(months=12)])
 
     fig.update_layout(
-        title="Forecast outlook by variable (X = forecast target date; faded = older call)",
+        title="Forecast outlook by variable (X = forecast target date; faded = older call; dashed = spot)",
         height=700,
         legend=dict(orientation="h", yanchor="bottom", y=-0.18),
         margin=dict(t=70, b=90, l=60, r=40),

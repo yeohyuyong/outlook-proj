@@ -97,6 +97,22 @@ If no eligible sources for a variable, include the H2 heading with exactly this 
 
 *No eligible sources for this variable in the current scan window.*
 
-8. OUTPUT BOUNDARY
-Your response must contain only the H1 title and the seven H2 sections above. No preamble, no postamble, no meta-commentary.
+8. CURRENT SPOT LEVELS (exempt from the 7-day window)
+
+After the seven variable sections, append this exact H2 section. For each variable, return the most recent available spot/print regardless of when the source was published. Use the latest official print for released economic indicators (CPI, GDP) and the most recent close for tradeable instruments (rates, FX, equities, oil). The Source URL must point to the page where the spot value was published. If a value is unavailable, write `N/A` in the Spot column — do not omit the row.
+
+## Current Spot Levels
+
+| Variable               | Spot   | As-of      | Source                     | Source URL |
+|------------------------|-------:|------------|----------------------------|------------|
+| Core CPI YoY           | [val]  | [YYYY-MM-DD] | [release / index source] | [URL]      |
+| Fed Funds Rate         | [val]  | [YYYY-MM-DD] | [source]                 | [URL]      |
+| US 10y Treasury Yield  | [val]  | [YYYY-MM-DD] | [source]                 | [URL]      |
+| DXY Index              | [val]  | [YYYY-MM-DD] | [source]                 | [URL]      |
+| US Real GDP Growth     | [val]  | [YYYY-MM-DD] | [source]                 | [URL]      |
+| Brent Oil              | [val]  | [YYYY-MM-DD] | [source]                 | [URL]      |
+| S&P 500                | [val]  | [YYYY-MM-DD] | [source]                 | [URL]      |
+
+9. OUTPUT BOUNDARY
+Your response must contain only the H1 title, the seven variable H2 sections, and the `## Current Spot Levels` H2 section. No preamble, no postamble, no meta-commentary.
 </research_instructions>

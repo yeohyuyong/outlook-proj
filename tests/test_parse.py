@@ -6,7 +6,7 @@ FIXTURES = Path(__file__).parent / "fixtures"
 
 
 def test_parse_apr15():
-    meta, entries = parse_report(FIXTURES / "2026-04-15.md")
+    meta, entries, _spot = parse_report(FIXTURES / "2026-04-15.md")
     assert meta.run_date == "2026-04-15"
     assert len(entries) == 6  # 3 variables × 2 sources
 
@@ -30,7 +30,7 @@ def test_parse_apr15():
 
 
 def test_parse_apr18_source_churn():
-    meta, entries = parse_report(FIXTURES / "2026-04-18.md")
+    meta, entries, _spot = parse_report(FIXTURES / "2026-04-18.md")
     assert meta.run_date == "2026-04-18"
 
     by_var: dict[str, list[dict]] = {}

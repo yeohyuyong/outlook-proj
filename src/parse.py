@@ -86,8 +86,44 @@ def _parse_entry(source_title: str, body: str) -> dict | None:
     }
 
 
-def parse_report(path: Path) -> tuple[RunMeta, list[dict]]:
-    """Parse one markdown report into (run metadata, list of entry rows)."""
+def _parse_spot_table(body: str, run_date: str) -> list[dict]:
+    """Extract spot rows from the body of a `## Current Spot Levels` H2 section.
+
+    Accepts both 4-column (legacy) and 5-column (with Source URL) tables.
+    """
+    rows: list[dict] = []
+    for raw in body.splitlines():
+        line = raw.strip()
+        if not (line.startswith("|") and line.endswith("|")):
+            continue
+        cells = [c.strip() for c in line.strip("|").split("|")]
+        if len(cells) not in (4, 5):
+            continue
+        if cells[0].lower() == "variable":
+            continue
+        if all(set(c) <= set("-: ") for c in cells):
+            continue
+        variable_raw, spot_raw, as_of, source = cells[:4]
+        source_url = cells[4] if len(cells) == 5 else ""
+        variable = next(
+            (v for v in VARIABLE_NAMES if v.lower() == variable_raw.lower()), None
+        )
+        if variable is None:
+            log.warning("spot table: unknown variable %r", variable_raw)
+            continue
+        rows.append({
+            "run_date": run_date,
+            "variable": variable,
+            "value": _coerce_float(spot_raw),
+            "as_of_date": as_of,
+            "source": source,
+            "source_url": source_url,
+        })
+    return rows
+
+
+def parse_report(path: Path) -> tuple[RunMeta, list[dict], list[dict]]:
+    """Parse one markdown report into (run metadata, entry rows, spot rows)."""
     text = path.read_text(encoding="utf-8")
 
     m = H1_RE.search(text)
@@ -102,9 +138,14 @@ def parse_report(path: Path) -> tuple[RunMeta, list[dict]]:
     )
 
     rows: list[dict] = []
+    spot_rows: list[dict] = []
     seen: set[tuple[str, str, str]] = set()
 
     for h2_heading, h2_body in _split_on_heading(text, 2):
+        if h2_heading.strip().lower().startswith("current spot levels"):
+            spot_rows.extend(_parse_spot_table(h2_body, run_date))
+            continue
+
         variable = _match_variable(h2_heading)
         if variable is None:
             log.warning("%s: H2 heading %r does not match any known variable", path, h2_heading)
@@ -128,4 +169,4 @@ def parse_report(path: Path) -> tuple[RunMeta, list[dict]]:
             entry["variable"] = variable
             rows.append(entry)
 
-    return meta, rows
+    return meta, rows, spot_rows

@@ -6,6 +6,7 @@ REPORTS_DIR = ROOT / "reports"
 DATA_DIR = ROOT / "data"
 ENTRIES_CSV = DATA_DIR / "entries.csv"
 RUNS_CSV = DATA_DIR / "runs.csv"
+LEVELS_CSV = DATA_DIR / "current_levels.csv"
 
 VARIABLES = [
     {

@@ -42,7 +42,6 @@ For each variable below, find every source that takes a view on it. ONE SOURCE P
 - **Unit:** must match the variable's unit from the table above.
 - **Horizon:** the horizon in the source's own words (e.g. "Q3 2026", "year-end 2026", "12m forward"). If the source forecasts a non-canonical horizon, extract the closest available value and note the actual horizon here.
 - **Stance:** `bullish` | `neutral` | `bearish` (per the semantics above).
-- **Conviction:** `low` | `med` | `high`. Use `high` only when the source commits with numbers or unambiguous language; `low` when heavily hedged.
 - **Key claim:** one sentence, ≤ 25 words, stating the source's core forecast or view.
 - **Evidence:** one sentence quoting or paraphrasing the specific passage that justifies the value and stance.
 
@@ -63,7 +62,6 @@ Only use reports from the internal enterprise research platform. Do not cite ext
 **Unit:** %
 **Horizon:** [horizon string]
 **Stance:** [bullish | neutral | bearish]
-**Conviction:** [low | med | high]
 **Key claim:** [≤ 25 words]
 **Evidence:** [one-sentence paraphrase or quote]
 

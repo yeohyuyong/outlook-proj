@@ -20,15 +20,8 @@ def test_parse_apr15():
     assert goldman_cpi["value"] == 2.8
     assert goldman_cpi["stance"] == "bearish"
     assert goldman_cpi["stance_n"] == -1
-    assert goldman_cpi["conviction"] == "high"
-    assert goldman_cpi["conviction_n"] == 3
     assert goldman_cpi["unit"] == "%"
     assert goldman_cpi["source_date"] == "2026-04-10"
-
-    # "medium" should normalize to "med"
-    goldman_fed = next(e for e in by_var["Fed Funds Rate"] if e["source"] == "Goldman Sachs")
-    assert goldman_fed["conviction"] == "med"
-    assert goldman_fed["conviction_n"] == 2
 
     # N/A value coerces to None
     goldman_10y = next(e for e in by_var["US 10y Treasury Yield"] if e["source"] == "Goldman Sachs")

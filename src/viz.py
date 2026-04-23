@@ -105,7 +105,7 @@ def forecast_chart(df: pd.DataFrame) -> go.Figure:
                 f"target: {row.target_date.date()}<br>"
                 f"horizon: {row.horizon}<br>"
                 f"value: {row.value} {row.unit}<br>"
-                f"stance: {row.stance} / {row.conviction}<br>"
+                f"stance: {row.stance}<br>"
                 f"{row.key_claim}<br>"
                 f"<i>{row.source_title} — shift+click to open</i>"
                 for row in sub_src.itertuples()
@@ -122,7 +122,7 @@ def forecast_chart(df: pd.DataFrame) -> go.Figure:
                     showlegend=show,
                     line=dict(color=color_map.get(source, "#333"), dash="dot"),
                     marker=dict(
-                        size=sub_src["conviction_n"].astype(float) * 4 + 4,
+                        size=10,
                         color=color_map.get(source, "#333"),
                         opacity=_recency_opacity(sub_src["source_date"], today),
                     ),

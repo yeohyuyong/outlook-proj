@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 ENTRY_COLUMNS = [
     "run_date", "variable", "source", "source_title", "source_url",
     "source_date", "value", "unit", "horizon",
-    "stance", "stance_n", "conviction", "conviction_n",
+    "stance", "stance_n",
     "key_claim", "evidence",
 ]
 

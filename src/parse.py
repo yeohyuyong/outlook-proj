@@ -7,7 +7,7 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-from .config import CONVICTION_TO_N, STANCE_TO_N, VARIABLE_NAMES
+from .config import STANCE_TO_N, VARIABLE_NAMES
 
 log = logging.getLogger(__name__)
 
@@ -71,15 +71,6 @@ def _parse_entry(source_title: str, body: str) -> dict | None:
         log.warning("entry %r has unrecognized stance %r; skipping", source_title, stance_raw)
         return None
 
-    conviction_raw = fields.get("conviction", "").lower()
-    if conviction_raw not in CONVICTION_TO_N:
-        log.warning(
-            "entry %r has unrecognized conviction %r; defaulting to 'med'",
-            source_title, conviction_raw,
-        )
-        conviction_raw = "med"
-    conviction_canonical = "med" if conviction_raw == "medium" else conviction_raw
-
     return {
         "source_title": source_title,
         "source": fields.get("source", ""),
@@ -90,8 +81,6 @@ def _parse_entry(source_title: str, body: str) -> dict | None:
         "horizon": fields.get("horizon", ""),
         "stance": stance_raw,
         "stance_n": STANCE_TO_N[stance_raw],
-        "conviction": conviction_canonical,
-        "conviction_n": CONVICTION_TO_N[conviction_raw],
         "key_claim": fields.get("key claim", ""),
         "evidence": fields.get("evidence", ""),
     }

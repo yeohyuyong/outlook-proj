@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
 
-from .config import SCAN_WINDOW_DAYS, STANCE_TO_N, VARIABLE_NAMES
+from .config import STANCE_TO_N, VARIABLE_NAMES
 
 log = logging.getLogger(__name__)
 
@@ -172,11 +172,10 @@ def parse_report(path: Path) -> tuple[RunMeta, list[dict], list[dict]]:
                     path, h3_heading, entry["source_date"],
                 )
                 continue
-            if not 0 <= delta <= SCAN_WINDOW_DAYS:
+            if delta < 0:
                 log.warning(
-                    "%s: entry %r source_date %s is %d days from run_date %s "
-                    "(allowed [0, %d]); skipping",
-                    path, h3_heading, entry["source_date"], delta, run_date, SCAN_WINDOW_DAYS,
+                    "%s: entry %r source_date %s is after run_date %s; skipping",
+                    path, h3_heading, entry["source_date"], run_date,
                 )
                 continue
 

@@ -3,22 +3,22 @@ Macro Outlook Tracker — Forecast Extraction
 </workflow_name>
 
 <user_query>
-Extract numeric forecasts and directional stance on a fixed set of macro variables from institutional research published in the past 7 days. Output machine-parseable markdown in the exact structure specified below.
+Extract numeric forecasts and directional stance on a fixed set of macro variables from institutional research published within a user-defined recent scan window (see SCAN WINDOW block below). Output machine-parseable markdown in the exact structure specified below.
 </user_query>
 
 <research_instructions>
 0. PRE-FLIGHT — PLACEHOLDER CHECK (run before anything else)
-Inspect the SCAN WINDOW block below. If either of its two date slots still contains unsubstituted template syntax (i.e., double curly braces wrapping `CURRENT_DATE` or `CURRENT_DATE_MINUS_7D` instead of an ISO `YYYY-MM-DD` date), the user forgot to fill in the scan window. Stop immediately. Produce no sections, no headings, no preamble, no spot levels. Output exactly this single line and nothing else:
+Inspect the SCAN WINDOW block below. If either of its two date slots still contains unsubstituted template syntax (i.e., double curly braces wrapping `SCAN_WINDOW_START` or `SCAN_WINDOW_END` instead of an ISO `YYYY-MM-DD` date), the user forgot to fill in the scan window. Stop immediately. Produce no sections, no headings, no preamble, no spot levels. Output exactly this single line and nothing else:
 
-ERROR: scan window not substituted. Expected ISO dates for CURRENT_DATE and CURRENT_DATE_MINUS_7D.
+ERROR: scan window not substituted. Expected ISO dates for SCAN_WINDOW_START and SCAN_WINDOW_END.
 
 SCAN WINDOW (both ends inclusive)
-- Scan Window Start: {{CURRENT_DATE_MINUS_7D}}
-- Scan Window End:   {{CURRENT_DATE}}
+- Scan Window Start: {{SCAN_WINDOW_START}}
+- Scan Window End:   {{SCAN_WINDOW_END}}
 
 Before extracting anything, silently verify:
 1. Both values are valid ISO `YYYY-MM-DD` dates.
-2. End minus Start is exactly 7 calendar days.
+2. End is on or after Start (the scan window must be non-negative). The window length itself is whatever the user chose — there is no fixed required length.
 3. A source is eligible IFF its publication date D satisfies `Start ≤ D ≤ End`. This is the sole eligibility test — not "first detected", not "recently circulated", not "still relevant", not "close enough".
 
 If any of (1)–(3) fails, output exactly:
@@ -86,7 +86,7 @@ Only use reports from the internal enterprise research platform. Do not cite ext
 
 6. OUTPUT FORMAT — reproduce this structure EXACTLY
 
-# Macro Outlook Tracker: {{CURRENT_DATE}}
+# Macro Outlook Tracker: {{SCAN_WINDOW_END}}
 
 ## Core CPI YoY (%)
 
@@ -132,7 +132,7 @@ If no eligible sources for a variable, include the H2 heading with exactly this 
 
 *No eligible sources for this variable in the current scan window.*
 
-8. CURRENT SPOT LEVELS (exempt from the 7-day window)
+8. CURRENT SPOT LEVELS (exempt from the scan window)
 
 After the seven variable sections, append this exact H2 section. For each variable, return the most recent available spot/print regardless of when the source was published. Use the latest official print for released economic indicators (CPI, GDP) and the most recent close for tradeable instruments (rates, FX, equities, oil). The Source URL must point to the page where the spot value was published. If a value is unavailable, write `N/A` in the Spot column — do not omit the row.
 
@@ -149,7 +149,7 @@ After the seven variable sections, append this exact H2 section. For each variab
 | S&P 500                | [val]  | [YYYY-MM-DD] | [source]                 | [URL]      |
 
 9. OUTPUT BOUNDARY (the pipeline parses this literally — deviations break it)
-- The H1 title MUST be a concrete ISO date matching Scan Window End, in the form `# Macro Outlook Tracker: YYYY-MM-DD`. Never emit the literal text `{{CURRENT_DATE}}`, a relative phrase like "today" or "this week", or a non-ISO format.
+- The H1 title MUST be a concrete ISO date matching Scan Window End, in the form `# Macro Outlook Tracker: YYYY-MM-DD`. Never emit the literal text `{{SCAN_WINDOW_END}}`, a relative phrase like "today" or "this week", or a non-ISO format.
 - The response contains ONLY: the H1 title, the seven variable H2 sections in the order given in §3, and the `## Current Spot Levels` H2 section. No preamble, no postamble, no meta-commentary, no reasoning traces from §3a, no code fences wrapping the markdown.
 - Every `###` block must include all nine mandatory fields from §4, using the exact label casing shown (including `Source URL`, `Source date`, `Key claim`). Missing or relabelled fields break `parse.py`.
 - If §0 (placeholder check) or the SCAN WINDOW verification failed, ignore this section entirely and emit only the single `ERROR: ...` line specified there.

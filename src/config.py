@@ -56,5 +56,3 @@ VARIABLES = [
 VARIABLE_NAMES = [v["name"] for v in VARIABLES]
 
 STANCE_TO_N = {"bullish": 1, "neutral": 0, "bearish": -1}
-
-SCAN_WINDOW_DAYS = 7

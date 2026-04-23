@@ -3,12 +3,11 @@ from __future__ import annotations
 
 import re
 
-import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from .config import STALENESS_CUTOFF_DAYS, VARIABLES
+from .config import VARIABLES
 
 _PALETTE = [
     "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
@@ -198,75 +197,3 @@ def forecast_trajectories(df: pd.DataFrame) -> go.Figure:
     return fig
 
 
-def source_presence_matrix(df: pd.DataFrame) -> go.Figure:
-    """Viz 2 — source × run heatmap, colored by staleness."""
-    if df.empty:
-        return go.Figure().update_layout(title="Source presence (no data)")
-
-    d = df.copy()
-    d["run_date"] = pd.to_datetime(d["run_date"])
-
-    run_dates = sorted(d["run_date"].unique())
-    sources = (
-        d.groupby("source").size().sort_values(ascending=False).index.tolist()
-    )
-
-    present = {(s, rd): False for s in sources for rd in run_dates}
-    for (s, rd), _ in d.groupby(["source", "run_date"]):
-        present[(s, rd)] = True
-
-    z = np.full((len(sources), len(run_dates)), np.nan)
-    for i, s in enumerate(sources):
-        last_present: pd.Timestamp | None = None
-        for j, rd in enumerate(run_dates):
-            if present[(s, pd.Timestamp(rd))]:
-                z[i, j] = 0.0
-                last_present = pd.Timestamp(rd)
-            elif last_present is not None:
-                days = (pd.Timestamp(rd) - last_present).days
-                z[i, j] = 1.0 if days <= STALENESS_CUTOFF_DAYS else 2.0
-
-    variables_map: dict[tuple[str, pd.Timestamp], list[str]] = {}
-    for (s, rd), grp in d.groupby(["source", "run_date"]):
-        variables_map[(s, pd.Timestamp(rd))] = sorted(grp["variable"].unique())
-
-    hover_text: list[list[str]] = []
-    for i, s in enumerate(sources):
-        row = []
-        for j, rd in enumerate(run_dates):
-            rd_ts = pd.Timestamp(rd)
-            val = z[i, j]
-            if np.isnan(val):
-                row.append(f"<b>{s}</b><br>{rd_ts.date()}<br>not yet seen")
-            elif val == 0.0:
-                vars_ = ", ".join(variables_map.get((s, rd_ts), []))
-                row.append(f"<b>{s}</b><br>{rd_ts.date()}<br>present — {vars_}")
-            elif val == 1.0:
-                row.append(f"<b>{s}</b><br>{rd_ts.date()}<br>stale")
-            else:
-                row.append(f"<b>{s}</b><br>{rd_ts.date()}<br>dropped")
-        hover_text.append(row)
-
-    fig = go.Figure(go.Heatmap(
-        z=z,
-        x=[pd.Timestamp(rd).date().isoformat() for rd in run_dates],
-        y=sources,
-        zmin=0, zmax=2,
-        colorscale=[
-            [0.0, "#2ca02c"],
-            [0.5, "#ffbf00"],
-            [1.0, "#aaaaaa"],
-        ],
-        showscale=False,
-        text=hover_text,
-        hoverinfo="text",
-        xgap=2, ygap=2,
-    ))
-    fig.update_layout(
-        title="Source presence matrix (green = present, yellow = stale, grey = dropped)",
-        xaxis_title="Run date",
-        yaxis_title="Source",
-        height=max(300, len(sources) * 32 + 150),
-        margin=dict(t=70, b=60, l=160, r=40),
-    )
-    return fig

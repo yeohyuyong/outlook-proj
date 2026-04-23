@@ -23,7 +23,6 @@ def build_html(
 
     fig1 = viz.forecast_trajectories(df)
     fig1b = viz.forecast_term_structure(df)
-    fig2 = viz.source_presence_matrix(df)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     generated = datetime.now().isoformat(timespec="seconds")
@@ -45,10 +44,9 @@ def build_html(
             f"<p class='meta'>Generated {generated}</p>\n"
         )
         # Embed plotly.js inline on the first figure so the HTML works offline;
-        # second figure reuses the already-loaded library.
+        # subsequent figures reuse the already-loaded library.
         fp.write(fig1.to_html(full_html=False, include_plotlyjs=True))
         fp.write(fig1b.to_html(full_html=False, include_plotlyjs=False))
-        fp.write(fig2.to_html(full_html=False, include_plotlyjs=False))
         fp.write(
             "<script>\n"
             "document.querySelectorAll('.plotly-graph-div').forEach(function(el){\n"

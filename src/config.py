@@ -7,8 +7,6 @@ DATA_DIR = ROOT / "data"
 ENTRIES_CSV = DATA_DIR / "entries.csv"
 RUNS_CSV = DATA_DIR / "runs.csv"
 
-STALENESS_CUTOFF_DAYS = 14
-
 VARIABLES = [
     {
         "name": "Core CPI YoY",

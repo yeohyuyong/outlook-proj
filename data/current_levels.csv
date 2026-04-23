@@ -1,1 +1,71 @@
 run_date,variable,value,as_of_date,source,source_url
+2025-04-22,Core CPI YoY,3.5,2025-04-21,BLS release,https://internal.example/bls-cpi-apr2025
+2025-04-22,Fed Funds Rate,5.0,2025-04-21,Fed target range midpoint,https://internal.example/fed-h15-apr2025
+2025-04-22,US 10y Treasury Yield,4.5,2025-04-21,Treasury close,https://internal.example/ust-10y-apr2025
+2025-04-22,DXY Index,104.0,2025-04-21,Bloomberg DXY close,https://internal.example/dxy-apr2025
+2025-04-22,US Real GDP Growth,2.8,2025-04-21,BEA latest estimate,https://internal.example/bea-gdp-apr2025
+2025-04-22,Brent Oil,80.0,2025-04-21,ICE Brent front-month close,https://internal.example/brent-apr2025
+2025-04-22,S&P 500,5300.0,2025-04-21,SPX close,https://internal.example/spx-apr2025
+2025-07-22,Core CPI YoY,3.4,2025-07-21,BLS release,https://internal.example/bls-cpi-jul2025
+2025-07-22,Fed Funds Rate,4.75,2025-07-21,Fed target range midpoint,https://internal.example/fed-h15-jul2025
+2025-07-22,US 10y Treasury Yield,4.4,2025-07-21,Treasury close,https://internal.example/ust-10y-jul2025
+2025-07-22,DXY Index,103.0,2025-07-21,Bloomberg DXY close,https://internal.example/dxy-jul2025
+2025-07-22,US Real GDP Growth,2.5,2025-07-21,BEA latest estimate,https://internal.example/bea-gdp-jul2025
+2025-07-22,Brent Oil,78.0,2025-07-21,ICE Brent front-month close,https://internal.example/brent-jul2025
+2025-07-22,S&P 500,5600.0,2025-07-21,SPX close,https://internal.example/spx-jul2025
+2025-10-22,Core CPI YoY,3.3,2025-10-21,BLS release,https://internal.example/bls-cpi-oct2025
+2025-10-22,Fed Funds Rate,4.5,2025-10-21,Fed target range midpoint,https://internal.example/fed-h15-oct2025
+2025-10-22,US 10y Treasury Yield,4.3,2025-10-21,Treasury close,https://internal.example/ust-10y-oct2025
+2025-10-22,DXY Index,102.0,2025-10-21,Bloomberg DXY close,https://internal.example/dxy-oct2025
+2025-10-22,US Real GDP Growth,2.2,2025-10-21,BEA latest estimate,https://internal.example/bea-gdp-oct2025
+2025-10-22,Brent Oil,75.0,2025-10-21,ICE Brent front-month close,https://internal.example/brent-oct2025
+2025-10-22,S&P 500,6100.0,2025-10-21,SPX close,https://internal.example/spx-oct2025
+2026-01-22,Core CPI YoY,3.2,2026-01-21,BLS release,https://internal.example/bls-cpi-jan2026
+2026-01-22,Fed Funds Rate,4.25,2026-01-21,Fed target range midpoint,https://internal.example/fed-h15-jan2026
+2026-01-22,US 10y Treasury Yield,4.2,2026-01-21,Treasury close,https://internal.example/ust-10y-jan2026
+2026-01-22,DXY Index,101.0,2026-01-21,Bloomberg DXY close,https://internal.example/dxy-jan2026
+2026-01-22,US Real GDP Growth,2.0,2026-01-21,BEA latest estimate,https://internal.example/bea-gdp-jan2026
+2026-01-22,Brent Oil,80.0,2026-01-21,ICE Brent front-month close,https://internal.example/brent-jan2026
+2026-01-22,S&P 500,6400.0,2026-01-21,SPX close,https://internal.example/spx-jan2026
+2026-03-18,Core CPI YoY,3.1,2026-03-17,BLS release,https://internal.example/bls-cpi-mar18
+2026-03-18,Fed Funds Rate,4.0,2026-03-17,Fed target range midpoint,https://internal.example/fed-h15-mar18
+2026-03-18,US 10y Treasury Yield,4.15,2026-03-17,Treasury close,https://internal.example/ust-10y-mar18
+2026-03-18,DXY Index,100.5,2026-03-17,Bloomberg DXY close,https://internal.example/dxy-mar18
+2026-03-18,US Real GDP Growth,1.9,2026-03-17,BEA latest estimate,https://internal.example/bea-gdp-mar18
+2026-03-18,Brent Oil,81.0,2026-03-17,ICE Brent front-month close,https://internal.example/brent-mar18
+2026-03-18,S&P 500,6500.0,2026-03-17,SPX close,https://internal.example/spx-mar18
+2026-03-25,Core CPI YoY,3.1,2026-03-24,BLS release,https://internal.example/bls-cpi-mar25
+2026-03-25,Fed Funds Rate,4.0,2026-03-24,Fed target range midpoint,https://internal.example/fed-h15-mar25
+2026-03-25,US 10y Treasury Yield,4.15,2026-03-24,Treasury close,https://internal.example/ust-10y-mar25
+2026-03-25,DXY Index,100.5,2026-03-24,Bloomberg DXY close,https://internal.example/dxy-mar25
+2026-03-25,US Real GDP Growth,1.9,2026-03-24,BEA latest estimate,https://internal.example/bea-gdp-mar25
+2026-03-25,Brent Oil,82.0,2026-03-24,ICE Brent front-month close,https://internal.example/brent-mar25
+2026-03-25,S&P 500,6550.0,2026-03-24,SPX close,https://internal.example/spx-mar25
+2026-04-01,Core CPI YoY,3.0,2026-03-31,BLS release,https://internal.example/bls-cpi-apr01
+2026-04-01,Fed Funds Rate,4.0,2026-03-31,Fed target range midpoint,https://internal.example/fed-h15-apr01
+2026-04-01,US 10y Treasury Yield,4.1,2026-03-31,Treasury close,https://internal.example/ust-10y-apr01
+2026-04-01,DXY Index,100.0,2026-03-31,Bloomberg DXY close,https://internal.example/dxy-apr01
+2026-04-01,US Real GDP Growth,1.9,2026-03-31,BEA latest estimate,https://internal.example/bea-gdp-apr01
+2026-04-01,Brent Oil,82.0,2026-03-31,ICE Brent front-month close,https://internal.example/brent-apr01
+2026-04-01,S&P 500,6600.0,2026-03-31,SPX close,https://internal.example/spx-apr01
+2026-04-08,Core CPI YoY,3.0,2026-04-07,BLS release,https://internal.example/bls-cpi-apr08
+2026-04-08,Fed Funds Rate,4.0,2026-04-07,Fed target range midpoint,https://internal.example/fed-h15-apr08
+2026-04-08,US 10y Treasury Yield,4.1,2026-04-07,Treasury close,https://internal.example/ust-10y-apr08
+2026-04-08,DXY Index,100.0,2026-04-07,Bloomberg DXY close,https://internal.example/dxy-apr08
+2026-04-08,US Real GDP Growth,1.9,2026-04-07,BEA latest estimate,https://internal.example/bea-gdp-apr08
+2026-04-08,Brent Oil,83.0,2026-04-07,ICE Brent front-month close,https://internal.example/brent-apr08
+2026-04-08,S&P 500,6650.0,2026-04-07,SPX close,https://internal.example/spx-apr08
+2026-04-15,Core CPI YoY,3.0,2026-04-14,BLS release,https://internal.example/bls-cpi-apr15
+2026-04-15,Fed Funds Rate,3.75,2026-04-14,Fed target range midpoint,https://internal.example/fed-h15-apr15
+2026-04-15,US 10y Treasury Yield,4.05,2026-04-14,Treasury close,https://internal.example/ust-10y-apr15
+2026-04-15,DXY Index,99.5,2026-04-14,Bloomberg DXY close,https://internal.example/dxy-apr15
+2026-04-15,US Real GDP Growth,1.9,2026-04-14,BEA latest estimate,https://internal.example/bea-gdp-apr15
+2026-04-15,Brent Oil,82.0,2026-04-14,ICE Brent front-month close,https://internal.example/brent-apr15
+2026-04-15,S&P 500,6680.0,2026-04-14,SPX close,https://internal.example/spx-apr15
+2026-04-22,Core CPI YoY,3.0,2026-04-21,BLS release,https://internal.example/bls-cpi-apr22
+2026-04-22,Fed Funds Rate,3.75,2026-04-21,Fed target range midpoint,https://internal.example/fed-h15-apr22
+2026-04-22,US 10y Treasury Yield,4.1,2026-04-21,Treasury close,https://internal.example/ust-10y-apr22
+2026-04-22,DXY Index,99.8,2026-04-21,Bloomberg DXY close,https://internal.example/dxy-apr22
+2026-04-22,US Real GDP Growth,1.9,2026-04-21,BEA latest estimate,https://internal.example/bea-gdp-apr22
+2026-04-22,Brent Oil,82.5,2026-04-21,ICE Brent front-month close,https://internal.example/brent-apr22
+2026-04-22,S&P 500,6700.0,2026-04-21,SPX close,https://internal.example/spx-apr22

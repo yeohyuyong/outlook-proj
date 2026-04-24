@@ -188,10 +188,20 @@ def forecast_chart(
     fig.update_xaxes(range=[today, today + pd.DateOffset(months=12)])
 
     fig.update_layout(
-        title="Forecast outlook by variable (X = forecast target date; faded = older call; dashed = spot)",
-        height=700,
-        legend=dict(orientation="h", yanchor="bottom", y=-0.18),
-        margin=dict(t=70, b=90, l=60, r=40),
+        title=dict(
+            text="Forecast outlook by variable",
+            font=dict(size=15),
+            x=0,
+            xanchor="left",
+        ),
+        height=820,
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=-0.14,
+            font=dict(size=11),
+        ),
+        margin=dict(t=55, b=110, l=60, r=40),
     )
     return fig
 

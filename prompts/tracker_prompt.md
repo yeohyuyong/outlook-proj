@@ -74,7 +74,7 @@ Before writing any `###` block, run the following pass internally:
 - **Source:** institution name only (e.g. "Goldman Sachs"). Generic attributions like "analysts say" are not acceptable.
 - **Source URL:** direct, accessible URL to the source report.
 - **Source date:** YYYY-MM-DD publication date of the source note.
-- **Value:** the source's numeric forecast at the stated Horizon. If the source takes a directional view without a number, write `N/A`.
+- **Value:** the source's numeric forecast at the stated Horizon. If the source takes a directional view without a number, write `N/A`. If the source states a range (e.g., "4.25–4.50"), emit the exact midpoint (e.g., `4.375`) and include the original range verbatim in the **Evidence** field.
 - **Unit:** must match the variable's unit from the table above.
 - **Horizon:** the horizon in the source's own words (e.g. "Q3 2026", "year-end 2026", "12m forward"). For **US Real GDP Growth**, use the form `year-end YYYY` where YYYY is the forecast calendar year.
 - **Horizon (months):** an integer from 1 to 18 inclusive, equal to the whole number of months from **Source date** to the target date of the source's forecast, rounded half-up (ties go to the farther month). If this value is outside [1, 18], exclude the source entirely. For **US Real GDP Growth only**, emit `N/A` — GDP is a calendar-year aggregate and is not bucketed by months. Worked examples:

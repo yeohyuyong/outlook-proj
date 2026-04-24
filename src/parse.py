@@ -42,6 +42,9 @@ def _coerce_float(raw: str) -> float | None:
     cleaned = re.sub(r"[,\s%$]", "", raw).strip()
     if cleaned.lower() in {"n/a", "na", "none", "null", "-", ""}:
         return None
+    m = re.match(r"^([\d.]+)[–—-]([\d.]+)$", cleaned)
+    if m:
+        return (float(m.group(1)) + float(m.group(2))) / 2
     try:
         return float(cleaned)
     except ValueError:

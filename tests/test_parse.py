@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from src.parse import parse_report
+from src.parse import _coerce_float, parse_report
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -102,6 +102,15 @@ def test_parse_keeps_distinct_same_source_same_date_notes(tmp_path):
         "Morgan Stanley — Inflation Daily",
         "Morgan Stanley — Inflation Weekly",
     }
+
+
+def test_coerce_float_range():
+    assert _coerce_float("4.25\u20134.50") == 4.375   # en-dash
+    assert _coerce_float("4.25-4.50") == 4.375         # hyphen
+    assert _coerce_float("4.25\u20144.50") == 4.375    # em-dash
+    assert _coerce_float("4.25\u20134.50%") == 4.375   # with % suffix
+    assert _coerce_float("N/A") is None
+    assert _coerce_float("-") is None
 
 
 def test_parse_dedupes_exact_duplicate_entries(tmp_path):

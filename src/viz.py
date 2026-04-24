@@ -196,7 +196,7 @@ def forecast_chart(
                 row=r, col=c,
             )
 
-    fig.update_xaxes(range=[today, today + pd.DateOffset(months=12)])
+    fig.update_xaxes(range=[today, today + pd.DateOffset(months=12)], title_text="Horizon")
 
     fig.update_layout(
         title=dict(

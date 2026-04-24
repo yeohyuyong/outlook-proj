@@ -37,6 +37,14 @@ def _recency_opacity(source_dates: pd.Series, today: pd.Timestamp) -> list[float
     return op.tolist()
 
 
+def _hex_to_rgba(hex_color: str, alpha: float) -> str:
+    h = hex_color.lstrip("#")
+    if len(h) == 3:
+        h = "".join(c * 2 for c in h)
+    r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+    return f"rgba({r},{g},{b},{alpha:.3f})"
+
+
 _MONTHS_FWD_RE = re.compile(r"(\d+)\s*m(?:o(?:nths?)?)?\s*(?:forward|fwd|ahead|out)?", re.I)
 _NEXT_N_RE = re.compile(r"next\s+(\d+)\s*m(?:o(?:nths?)?)?", re.I)
 _YEAR_END_RE = re.compile(r"(?:year[- ]?end|end[- ]?of|end[- ])\s*(\d{4})", re.I)
@@ -124,6 +132,9 @@ def forecast_chart(
             ]
             show = source not in legend_shown
             legend_shown.add(source)
+            color = color_map.get(source, "#333")
+            opacities = _recency_opacity(sub_src["source_date"], today)
+            line_opacity = sum(opacities) / len(opacities)
             fig.add_trace(
                 go.Scatter(
                     x=sub_src["target_date"],
@@ -132,11 +143,11 @@ def forecast_chart(
                     name=source,
                     legendgroup=source,
                     showlegend=show,
-                    line=dict(color=color_map.get(source, "#333"), dash="dot"),
+                    line=dict(color=_hex_to_rgba(color, line_opacity), dash="dot"),
                     marker=dict(
                         size=10,
-                        color=color_map.get(source, "#333"),
-                        opacity=_recency_opacity(sub_src["source_date"], today),
+                        color=color,
+                        opacity=opacities,
                     ),
                     hovertext=hover,
                     hoverinfo="text",

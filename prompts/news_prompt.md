@@ -49,7 +49,7 @@ A candidate source passes the substance gate ONLY if it meets ALL of the followi
 - **Current Situation**: Source provides ≥3 distinct quantitative data points with units (e.g., price, volume, date, %, bp, barrels, mb/d).
 - **Potential Developments**: Source names ≥1 forward-looking scenario with BOTH (a) a numeric range or level AND (b) an explicit time horizon stated by the source (e.g., "over the next 3 months", "within 4-6 weeks", "by year-end"). Your own synthesis of Current Situation facts into forward-looking language does NOT pass this gate.
 - **Impact to Sectors**: Source itself names ≥1 specific sector AND describes the transmission mechanism (e.g., feedstock costs, insurance premiums, rerouting delays, crack spreads). General statements like "commodities will be affected" do NOT pass — the source must name the sector.
-- **Broader Impact & Outlook**: Source states ≥1 quantified projection with a source-stated time horizon (months, quarters, year-end, over next N months). Investment stance or instrument-level views alone do NOT pass — there must be a macro- or sector-level forward-looking statement.
+- **Broader Impact & Outlook**: Source states ≥1 forward-looking projection that meets BOTH of the following criteria: (a) **Quantitative number** — a specific numeric value or range (e.g., "3.2%", "USD 95–105/bbl", "0.3–0.5pp"); directional language alone ("will rise", "go down", "increase") does NOT pass; AND (b) **Explicit time horizon** — a specific time period stated by the source (e.g., "over the next 3 months", "by year-end 2026", "within 6 months", "in Q3 2026"); vague language ("long term", "eventually", "over time", "in the coming period", "going forward") does NOT pass. Investment stance or instrument-level views alone do NOT pass — there must be a macro- or sector-level forward-looking statement meeting both criteria.
 - **Relevant Charts & Data**: Source contains ≥1 labeled exhibit (e.g., "Exhibit 3", "Figure 2", "Table 1", a titled chart, a scenario matrix). Prose numbers reformatted as a bullet list do NOT count.
 
 If any threshold is not met, the verdict is EXCLUDE.
@@ -91,9 +91,9 @@ Do not silently drop any source. Every source you considered must appear in the 
   </section>
 
   <section name="broader_outlook">
-    <quantified_projection>[Quote, OR write NONE]</quantified_projection>
-    <source_stated_horizon>[Quote, OR write NONE]</source_stated_horizon>
-    <verdict>PASS | FAIL</verdict>
+    <criterion_a_quantitative_number>[Quote the specific number or numeric range from the source — directional language alone ("will rise", "go down") fails; write NONE if absent]</criterion_a_quantitative_number>
+    <criterion_b_explicit_horizon>[Quote the source's exact horizon language — vague terms ("long term", "eventually", "over time", "going forward") fail; write NONE if absent]</criterion_b_explicit_horizon>
+    <verdict>PASS only if BOTH criterion_a AND criterion_b are non-NONE | FAIL</verdict>
   </section>
 
   <section name="charts_and_data">
@@ -275,8 +275,8 @@ The following examples illustrate the eligibility-then-finding flow. Content is 
   </section>
 
   <section name="broader_outlook">
-    <quantified_projection>"Global GDP drag of 0.3-0.5% under adverse scenario"</quantified_projection>
-    <source_stated_horizon>"over the next 12 months"</source_stated_horizon>
+    <criterion_a_quantitative_number>"Global GDP drag of 0.3-0.5% under adverse scenario"</criterion_a_quantitative_number>
+    <criterion_b_explicit_horizon>"over the next 12 months"</criterion_b_explicit_horizon>
     <verdict>PASS</verdict>
   </section>
 

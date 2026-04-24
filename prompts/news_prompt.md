@@ -78,6 +78,7 @@ Do not silently drop any source. Every source you considered must appear in the 
     <source_scenarios>[Quote the source's own named scenarios, OR write NONE]</source_scenarios>
     <numeric_range_or_level>[Quote, OR write NONE]</numeric_range_or_level>
     <explicit_horizon>[Quote the source's own horizon language, OR write NONE]</explicit_horizon>
+    <source_quote>[Direct verbatim quote from the source for each scenario, numeric range, and horizon — NONE if absent. A paraphrase is NOT a quote. If this field is NONE, the verdict must be FAIL.]</source_quote>
     <verdict>PASS | FAIL</verdict>
   </section>
 
@@ -150,6 +151,9 @@ Example of a non-qualifying URL: `https://grn/research/channel/...`, `grn://...`
 - "implied by", "beyond implication"
 - "could persist if", "would likely", "may improve contingent", "likely to remain"
 - "the provided excerpt does not", "the excerpt does not"
+- "signals", "confirms", "reflects", "indicates", "suggests", "points to"
+- "demonstrates", "reveals", "highlights", "underlines", "underscores"
+- "consistent with", "in line with", "appears to show", "seems to indicate"
 
 **Typical sources that fail the substance gate — recognize and exclude early:**
 - Event invitations
@@ -180,24 +184,24 @@ When (and only when) the eligibility block's overall_verdict is INCLUDE, write t
 
 **Affected Regions/Countries:** [Specific regions and countries]
 
-**Summary:** [2-3 sentences capturing top takeaways, with explicit attribution ("The report states...", "According to the source..."), ≥2 concrete figures with units. Bold standalone numeric values with units. Do not duplicate the Impact to Sectors Summary.]
+**Summary:** [2-3 sentences reporting the source's own stated key findings, with explicit attribution ("The report states...", "According to the source..."), ≥2 concrete figures with units. Bold standalone numeric values with units. Do not duplicate the Impact to Sectors Summary.]
 
-**Impact to Sectors Summary:** [1-3 sentences naming only sectors the source explicitly discusses, stating direction and (where given) magnitude. Bold standalone numeric values with units. High-level digest; do not repeat the detailed Impact to Sectors section.]
+**Impact to Sectors Summary:** [1-3 sentences naming only sectors the source explicitly discusses, quoting or paraphrasing the source's stated direction and (where given) magnitude. Bold standalone numeric values with units. High-level digest; do not repeat the detailed Impact to Sectors section.]
 
 ### Current Situation
-[Exhaustive, logically organized (chronological or thematic) account of present conditions exactly as described by the source. Multiple paragraphs if needed. Include all relevant data points, prices, quantities, geographies, actors, time stamps. Explicit attribution throughout ("The report states...", "According to the report..."). Constrain content to developments within the Scan Window that the source itself reports. No outlooks, scenarios, or implications here.]
+[Exhaustive account of present conditions exactly as described by the source, ordered as presented in the source, or chronologically if the source uses dates. Do not impose thematic groupings the source itself does not use. Multiple paragraphs if needed. Include all relevant data points, prices, quantities, geographies, actors, time stamps. Explicit attribution throughout ("The report states...", "According to the report..."). Constrain content to developments within the Scan Window that the source itself reports. No outlooks, scenarios, or implications here.]
 
 ### Potential Developments
 [ONLY the source's own forward-looking elements: scenarios, projections, risk assessments, stated probabilities, time horizons. Reproduce scenario labels verbatim (e.g., base/adverse/best). For each scenario: projected variables (levels, ranges, spreads), explicit horizon, stated assumptions or triggers. If the source provides no forward-looking content, the source should have failed the eligibility gate — return and re-check.]
 
 ### Impact to Sectors
-[Bullet points by sector, covering only sectors the source names. For each sector: direction and magnitude of impact with units; transmission mechanism (feedstock costs, insurance premiums, rerouting delays, etc.); specified regional exposure; any quantified sensitivities, elasticities, or time-bound effects.]
+[Bullet points by sector, covering only sectors the source names. For each sector: direction and magnitude of impact with units; transmission mechanism (only those the source itself explicitly names — do not supply domain knowledge); specified regional exposure; any quantified sensitivities, elasticities, or time-bound effects that the source itself states.]
 
 ### Broader Impact & Outlook
-[Source's own forward-looking statements, projections, and described impacts at country or sector level. Begin with explicit attribution ("The source projects...", "According to the report..."). Include all quantified forecasts, ranges, and source-stated time horizons exactly as stated. Reproduce any scenario comparisons (base, adverse, best-case) faithfully.]
+[Source's own forward-looking statements, projections, and explicitly stated impacts at country or sector level — quote or name the source sentence for each impact. Begin with explicit attribution ("The source projects...", "According to the report..."). Include all quantified forecasts, ranges, and source-stated time horizons exactly as stated. Reproduce any scenario comparisons (base, adverse, best-case) faithfully. Do not add impacts the source did not explicitly articulate.]
 
 ### Relevant Charts & Data
-[Reference ≥1 named exhibit from the source by its label ("Exhibit 1", "Figure 2", "Table 3", titled chart). For each exhibit: title, axes and units, time span, key values or trends exactly as shown. For scenario exhibits: reproduce scenario names, figures/ranges, and horizons exactly. Do not embed images; describe verbally. Do not merely restate prose numbers — the source must contain actual labeled exhibits.]
+[Reference ≥1 named exhibit from the source by its label ("Exhibit 1", "Figure 2", "Table 3", titled chart). For each exhibit: title, axes and units, time span, key data points exactly as labeled (do not characterize trends — report the numbers). For scenario exhibits: reproduce scenario names, figures/ranges, and horizons exactly. Do not embed images; describe verbally. Do not merely restate prose numbers — the source must contain actual labeled exhibits.]
 ```
 </finding_template>
 
@@ -362,6 +366,8 @@ After processing ALL candidate sources (and after emitting the `<rejected_source
   <confirm_every_excluded_source_appears_in_rejected_sources>YES</confirm_every_excluded_source_appears_in_rejected_sources>
   <confirm_all_findings_have_eligibility_block>YES</confirm_all_findings_have_eligibility_block>
   <confirm_no_prohibited_phrases_in_findings>YES</confirm_no_prohibited_phrases_in_findings>
+  <confirm_no_inference_verbs_in_findings>YES</confirm_no_inference_verbs_in_findings>
+  <confirm_no_cross_finding_synthesis>YES</confirm_no_cross_finding_synthesis>
   <confirm_all_urls_direct_and_qualified>YES</confirm_all_urls_direct_and_qualified>
   <confirm_no_inline_citations_in_findings>YES</confirm_no_inline_citations_in_findings>
   <confirm_all_findings_within_scan_window>YES</confirm_all_findings_within_scan_window>
@@ -377,7 +383,7 @@ If any confirmation cannot be YES, go back and fix (by excluding the offending f
 Your final output, in this order:
 
 1. H1 title: `# Enterprise Risk Intelligence: {Focus Topic} — {Scan Window End date}`
-2. For each INCLUDE source: the full `<eligibility>` block, followed immediately by the finding. Group these by category (sequence in `<categories>`), newest first within each category. EXCLUDE sources do NOT appear here — they go into the rejection log below.
+2. For each INCLUDE source: the full `<eligibility>` block, followed immediately by the finding. Group these by category (sequence in `<categories>`), newest first within each category. EXCLUDE sources do NOT appear here — they go into the rejection log below. Do not draw connections between findings from different sources. Each finding is independent — no inter-finding synthesis.
 3. A single consolidated `<rejected_sources>` block listing every source that was considered and excluded, with a one-line reason each. If zero sources were excluded, emit an empty `<rejected_sources></rejected_sources>`.
 4. The `<self_check>` block, with numeric totals that reconcile (`total_candidates_considered = included + excluded`).
 

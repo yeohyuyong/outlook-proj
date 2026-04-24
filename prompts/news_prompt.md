@@ -24,6 +24,8 @@ Produce a structured intelligence report on the Focus Topic given in <task> belo
 6. **Country and sector level.** Focus on country and sector developments, not individual companies, unless the source itself states that a company event has sector-wide or national implications.
 
 7. **No inline citations inside finding blocks.** The metadata fields (Source, Source URL, Date) already identify the source. Do not append `([Source, Date](URL))` or `([Source](URL))` after sentences, paragraphs, or bullets inside any section of a finding block.
+
+8. **Verbatim quote rule.** Every factual claim, data point, scenario, projection, and sectoral impact in a finding must be followed immediately by the verbatim source passage in double quotation marks that supports it. If you cannot produce a verbatim quote, do not write the claim. Use this format: `[attribution phrase] [paraphrased claim] — "[verbatim source text]"`. A paraphrase without a following verbatim quote is an unverifiable assertion and is prohibited.
 </core_principles>
 
 <categories>
@@ -189,16 +191,16 @@ When (and only when) the eligibility block's overall_verdict is INCLUDE, write t
 **Impact to Sectors Summary:** [1-3 sentences naming only sectors the source explicitly discusses, quoting or paraphrasing the source's stated direction and (where given) magnitude. Bold standalone numeric values with units. High-level digest; do not repeat the detailed Impact to Sectors section.]
 
 ### Current Situation
-[Exhaustive account of present conditions exactly as described by the source, ordered as presented in the source, or chronologically if the source uses dates. Do not impose thematic groupings the source itself does not use. Multiple paragraphs if needed. Include all relevant data points, prices, quantities, geographies, actors, time stamps. Explicit attribution throughout ("The report states...", "According to the report..."). Constrain content to developments within the Scan Window that the source itself reports. No outlooks, scenarios, or implications here.]
+[Exhaustive account of present conditions exactly as described by the source, ordered as presented in the source, or chronologically if the source uses dates. Do not impose thematic groupings the source itself does not use. Multiple paragraphs if needed. Include all relevant data points, prices, quantities, geographies, actors, time stamps. Explicit attribution throughout ("The report states...", "According to the report..."). For every factual claim, immediately follow it with the verbatim source passage in double quotation marks — e.g., "The report states Brent rose sharply — 'Brent closed at USD 98.2/bbl on April 13, up 4.2% on the day.'" Constrain content to developments within the Scan Window that the source itself reports. No outlooks, scenarios, or implications here.]
 
 ### Potential Developments
-[ONLY the source's own forward-looking elements: scenarios, projections, risk assessments, stated probabilities, time horizons. Reproduce scenario labels verbatim (e.g., base/adverse/best). For each scenario: projected variables (levels, ranges, spreads), explicit horizon, stated assumptions or triggers. If the source provides no forward-looking content, the source should have failed the eligibility gate — return and re-check.]
+[ONLY the source's own forward-looking elements: scenarios, projections, risk assessments, stated probabilities, time horizons. Reproduce scenario labels verbatim (e.g., base/adverse/best). For each scenario: projected variables (levels, ranges, spreads), explicit horizon, stated assumptions or triggers — each followed immediately by the verbatim source passage in double quotation marks. If the source provides no forward-looking content, the source should have failed the eligibility gate — return and re-check.]
 
 ### Impact to Sectors
-[Bullet points by sector, covering only sectors the source names. For each sector: direction and magnitude of impact with units; transmission mechanism (only those the source itself explicitly names — do not supply domain knowledge); specified regional exposure; any quantified sensitivities, elasticities, or time-bound effects that the source itself states.]
+[Bullet points by sector, covering only sectors the source names. For each sector: direction and magnitude of impact with units; transmission mechanism (only those the source itself explicitly names — do not supply domain knowledge); specified regional exposure; any quantified sensitivities, elasticities, or time-bound effects that the source itself states. Each bullet must end with the verbatim source passage in double quotation marks that supports the claim.]
 
 ### Broader Impact & Outlook
-[Source's own forward-looking statements, projections, and explicitly stated impacts at country or sector level — quote or name the source sentence for each impact. Begin with explicit attribution ("The source projects...", "According to the report..."). Include all quantified forecasts, ranges, and source-stated time horizons exactly as stated. Reproduce any scenario comparisons (base, adverse, best-case) faithfully. Do not add impacts the source did not explicitly articulate.]
+[Source's own forward-looking statements, projections, and explicitly stated impacts at country or sector level. Begin with explicit attribution ("The source projects...", "According to the report..."). Every projection and impact must be followed immediately by the verbatim source passage in double quotation marks. Include all quantified forecasts, ranges, and source-stated time horizons exactly as stated. Reproduce any scenario comparisons (base, adverse, best-case) faithfully. Do not add impacts the source did not explicitly articulate.]
 
 ### Relevant Charts & Data
 [Reference ≥1 named exhibit from the source by its label ("Exhibit 1", "Figure 2", "Table 3", titled chart). For each exhibit: title, axes and units, time span, key data points exactly as labeled (do not characterize trends — report the numbers). For scenario exhibits: reproduce scenario names, figures/ranges, and horizons exactly. Do not embed images; describe verbally. Do not merely restate prose numbers — the source must contain actual labeled exhibits.]
@@ -227,6 +229,18 @@ CORRECT:
 - Brent fell to **mid-$90s/bbl** on April 8.
 
 **Finding order.** Order findings by category (sequence in <categories>), then by publication date (newest first) within each category.
+
+**Inline verbatim quote format.** Every substantive claim in a finding section must be immediately followed by the verbatim source passage in double quotation marks, separated by an em dash. This makes it unambiguous whether a statement originated in the source or was introduced by the analyst.
+
+Format: `[Attribution phrase] [paraphrased claim] — "[verbatim source text]"`
+
+WRONG (claim with no quote — cannot verify source vs. inference):
+- The report states Brent closed higher on April 13.
+
+CORRECT (paraphrase immediately backed by verbatim quote):
+- The report states Brent closed sharply higher on April 13 — "Brent closed at USD 98.2/bbl on April 13, up 4.2% on the day."
+
+If a single claim is supported by multiple source sentences, chain the quotes: `— "sentence one." "sentence two."`
 </formatting_rules>
 
 <examples>
@@ -297,18 +311,18 @@ The following examples illustrate the eligibility-then-finding flow. Content is 
 **Impact to Sectors Summary:** The report states airline jet-fuel cracks widened **+USD 8/bbl**, petrochemical naphtha costs rose **6-8%**, and European refiner margins compressed **USD 2-3/bbl**.
 
 ### Current Situation
-According to the report, Brent closed at **USD 98.2/bbl** on April 13, up **4.2%** on the day. The source states Strait of Hormuz tanker traffic fell **-18%** week-on-week following the April 12 incident, with crude inventories drawing **-2.1mb** in the latest weekly reading. The report notes 5Y UST yields rose **+7bp** on safe-haven flows.
+According to the report, Brent closed sharply higher on April 13 — "Brent closed at USD 98.2/bbl on April 13, up 4.2% on the day." The source states Strait of Hormuz tanker traffic fell week-on-week following the April 12 incident — "Strait of Hormuz tanker traffic fell 18% week-on-week." Crude inventories drew in the latest weekly reading — "Crude inventories drew 2.1mb." The report notes 5Y UST yields rose on safe-haven flows — "5Y UST yields rose 7bp."
 
 ### Potential Developments
-The source presents three scenarios for Brent over the next **3 months**: base case at **USD 95-105/bbl**, adverse at **USD 115-130/bbl**, and best case at **USD 85-92/bbl**. The report states the adverse scenario assumes sustained Strait of Hormuz disruption; the best case assumes a diplomatic de-escalation.
+The source presents three scenarios for Brent over the next **3 months** — "We see three cases over the next 3 months: base (USD 95-105/bbl), adverse (USD 115-130/bbl), best (USD 85-92/bbl)." The report states the adverse scenario assumes sustained disruption — "The adverse case assumes sustained Strait of Hormuz disruption." The best case assumes de-escalation — "The best case assumes a diplomatic de-escalation by end-April."
 
 ### Impact to Sectors
-- **Airlines**: The report states jet-fuel crack spreads widen **+USD 8/bbl** under the base case, with Asian carriers most exposed.
-- **Refiners**: The source states European refining margins compress by **USD 2-3/bbl** due to sour-crude availability constraints.
-- **Petrochemicals**: Per the source, naphtha costs rise **6-8%**, pressuring downstream chemical margins in Korea and Japan.
+- **Airlines**: The report states jet-fuel crack spreads widen under the base case, with Asian carriers most exposed — "Jet fuel crack spreads widen by +USD 8/bbl under the base case; Asian carriers face the highest exposure."
+- **Refiners**: The source states European refining margins compress due to sour-crude availability constraints — "European refining margins compress USD 2-3/bbl as sour-crude availability tightens."
+- **Petrochemicals**: Per the source, naphtha costs rise, pressuring downstream chemical margins in Korea and Japan — "Naphtha costs rise 6-8%, squeezing downstream chemical margins in Korea and Japan."
 
 ### Broader Impact & Outlook
-The source projects global GDP drag of **0.3-0.5%** over the next **12 months** under the adverse scenario, concentrated in energy-importing Asia. According to the report, headline CPI in the euro area would rise **+0.4-0.6pp** under the same scenario.
+The source projects a global GDP drag over the next **12 months** under the adverse scenario, concentrated in energy-importing Asia — "We project a global GDP drag of 0.3-0.5% over the next 12 months under the adverse scenario, concentrated in energy-importing Asia." According to the report, headline CPI in the euro area would rise under the same scenario — "Euro area headline CPI would rise +0.4-0.6pp under the adverse case."
 
 ### Relevant Charts & Data
 **Exhibit 3: Brent scenario fan chart** (USD/bbl, 3M horizon) shows the base case centered on **USD 100/bbl**, the adverse band extending to **USD 130/bbl**, and the best band down to **USD 85/bbl**. **Table 2: Sector sensitivity matrix** reproduces airline, refiner, and petrochemical margin deltas across the three scenarios.
@@ -368,6 +382,7 @@ After processing ALL candidate sources (and after emitting the `<rejected_source
   <confirm_no_prohibited_phrases_in_findings>YES</confirm_no_prohibited_phrases_in_findings>
   <confirm_no_inference_verbs_in_findings>YES</confirm_no_inference_verbs_in_findings>
   <confirm_no_cross_finding_synthesis>YES</confirm_no_cross_finding_synthesis>
+  <confirm_every_claim_has_verbatim_quote>YES</confirm_every_claim_has_verbatim_quote>
   <confirm_all_urls_direct_and_qualified>YES</confirm_all_urls_direct_and_qualified>
   <confirm_no_inline_citations_in_findings>YES</confirm_no_inline_citations_in_findings>
   <confirm_all_findings_within_scan_window>YES</confirm_all_findings_within_scan_window>
